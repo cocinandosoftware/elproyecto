@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World - Django App</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'hello/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="hello-title">¡Hola Mundo! 🌍</h1>
+        <p class="hello-subtitle">Este es tu primer proyecto Django con archivos estáticos</p>
+        
+        <!-- Imagen usando archivos estáticos -->
+        <img src="{% static 'hello/images/django-logo.svg' %}" alt="Django Logo" class="django-logo">
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🎨 CSS</h3>
+                <p>Estilos personalizados cargados desde archivos estáticos</p>
+            </div>
+            <div class="feature">
+                <h3>🖼️ Imágenes</h3>
+                <p>Logo SVG servido como archivo estático</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ JavaScript</h3>
+                <p>Interactividad con JS desde archivos estáticos</p>
+            </div>
+            <div class="feature">
+                <h3>📱 Responsive</h3>
+                <p>Diseño adaptable a diferentes pantallas</p>
+            </div>
+        </div>
+        
+        <p style="margin-top: 2rem; color: #666; font-size: 0.9rem;">
+            <strong>Tip:</strong> Haz clic en el logo de Django para ver una animación 🎭
+        </p>
+    </div>
+    
+    <!-- JavaScript cargado desde archivos estáticos -->
+    <script src="{% static 'hello/js/main.js' %}"></script>
+</body>
+</html>
