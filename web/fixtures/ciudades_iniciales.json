@@ -1,0 +1,162 @@
+[
+  {
+    "model": "web.ciudad",
+    "pk": 1,
+    "fields": {
+      "nombre": "Madrid",
+      "pais": "España"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 2,
+    "fields": {
+      "nombre": "Barcelona",
+      "pais": "España"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 3,
+    "fields": {
+      "nombre": "Valencia",
+      "pais": "España"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 4,
+    "fields": {
+      "nombre": "Sevilla",
+      "pais": "España"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 5,
+    "fields": {
+      "nombre": "París",
+      "pais": "Francia"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 6,
+    "fields": {
+      "nombre": "Londres",
+      "pais": "Reino Unido"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 7,
+    "fields": {
+      "nombre": "Roma",
+      "pais": "Italia"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 8,
+    "fields": {
+      "nombre": "Berlín",
+      "pais": "Alemania"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 9,
+    "fields": {
+      "nombre": "Amsterdam",
+      "pais": "Países Bajos"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 10,
+    "fields": {
+      "nombre": "Lisboa",
+      "pais": "Portugal"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 11,
+    "fields": {
+      "nombre": "Buenos Aires",
+      "pais": "Argentina"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 12,
+    "fields": {
+      "nombre": "Ciudad de México",
+      "pais": "México"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 13,
+    "fields": {
+      "nombre": "São Paulo",
+      "pais": "Brasil"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 14,
+    "fields": {
+      "nombre": "Bogotá",
+      "pais": "Colombia"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 15,
+    "fields": {
+      "nombre": "Lima",
+      "pais": "Perú"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 16,
+    "fields": {
+      "nombre": "Santiago",
+      "pais": "Chile"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 17,
+    "fields": {
+      "nombre": "Nueva York",
+      "pais": "Estados Unidos"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 18,
+    "fields": {
+      "nombre": "Los Ángeles",
+      "pais": "Estados Unidos"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 19,
+    "fields": {
+      "nombre": "Toronto",
+      "pais": "Canadá"
+    }
+  },
+  {
+    "model": "web.ciudad",
+    "pk": 20,
+    "fields": {
+      "nombre": "Tokio",
+      "pais": "Japón"
+    }
+  }
+]

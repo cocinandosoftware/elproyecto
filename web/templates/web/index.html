@@ -9,8 +9,16 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="hello-title">¡Hola Mundo! 🌍</h1>
+        <h1 class="hello-title">¡Hola Mundo, {{ nombre }}! 🌍</h1>
         <p class="hello-subtitle">Este es tu primer proyecto Django con archivos estáticos</p>
+
+        <p>Estas son las ciudades más interesantes:<br>
+            <ul></ul>
+            {% for ciudad in ciudades %}
+                <li class="city">{{ ciudad.nombre }} del país {{ ciudad.pais }}</li>
+            {% endfor %}
+            </ul>
+        </p>
         
         <!-- Imagen usando archivos estáticos -->
         <img src="{% static 'hello/images/django-logo.svg' %}" alt="Django Logo" class="django-logo">
