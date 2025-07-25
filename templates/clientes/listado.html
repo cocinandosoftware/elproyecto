@@ -1,0 +1,400 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Estilos para el header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .page-title {
+            margin: 0;
+            color: #333;
+            font-size: 2rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* Estilos para indicadores KPI */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .kpi-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+        }
+        
+        .kpi-title {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+        
+        .kpi-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        
+        /* Estilos para filtros */
+        .filters-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .filters-title {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .filter-input, .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .filters-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-search {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-clear {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        /* Estilos para tabla */
+        .table-section {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .table-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .table-title {
+            margin: 0;
+            color: #333;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .results-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .results-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-actions {
+                justify-content: stretch;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Zona Header -->
+        <div class="page-header">
+            <h1 class="page-title">Listado de Clientes</h1>
+            <div class="header-actions">
+                <a href="#" class="btn btn-primary">+ Nuevo Cliente</a>
+                <a href="#" class="btn btn-secondary">📊 Exportar</a>
+            </div>
+        </div>
+
+        <!-- Zona Indicadores KPI -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Clientes</div>
+                <div class="kpi-value">{{ estadisticas.total_clientes }}</div>
+                <div class="kpi-change positive">↗ +12% este mes</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Clientes Activos</div>
+                <div class="kpi-value">{{ estadisticas.clientes_activos }}</div>
+                <div class="kpi-change positive">↗ +5% este mes</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Nuevos inactivos</div>
+                <div class="kpi-value">{{ estadisticas.clientes_inactivos }}</div>
+                <div class="kpi-change negative">↘ -3% vs mes anterior</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Facturación Promedio</div>
+                <div class="kpi-value">€{{ estadisticas.total_facturacion }}</div>
+                <div class="kpi-change positive">↗ +8% este mes</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Total PromedioFacturación</div>
+                <div class="kpi-value">€{{ estadisticas.facturacion_promedio }}</div>
+                <div class="kpi-change positive">↗ +10% este mes</div>
+            </div>
+        </div>
+
+        <!-- Zona Buscadores por Filtros -->
+        <div class="filters-section">
+            <h3 class="filters-title">🔍 Filtros de Búsqueda</h3>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Nombre/Empresa:</label>
+                    <input type="text" class="filter-input" placeholder="Buscar por nombre o empresa...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Estado:</label>
+                    <select class="filter-select">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Ciudad:</label>
+                    <select class="filter-select">
+                        <option value="">Todas las ciudades</option>
+                        <option value="madrid">Madrid</option>
+                        <option value="barcelona">Barcelona</option>
+                        <option value="valencia">Valencia</option>
+                        <option value="sevilla">Sevilla</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Fecha Registro:</label>
+                    <input type="date" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Facturación Mín:</label>
+                    <input type="number" class="filter-input" placeholder="€0">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Categoría:</label>
+                    <select class="filter-select">
+                        <option value="">Todas las categorías</option>
+                        <option value="premium">Premium</option>
+                        <option value="standard">Standard</option>
+                        <option value="basic">Básico</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filters-actions">
+                <button class="btn btn-clear">🗑️ Limpiar</button>
+                <button class="btn btn-search">🔍 Buscar</button>
+            </div>
+        </div>
+
+        <!-- Zona Tabla de Resultados -->
+        <div class="table-section">
+            <div class="table-header">
+                <h3 class="table-title">📋 Resultados de la Búsqueda (25 clientes encontrados)</h3>
+            </div>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th>Facturación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.id}}</td>
+                        <td>{{ cliente.fecha_alta|date:"d/m/Y" }}</td>
+                        <td>{{ cliente.nombre_comercial }}</td>
+                        <td>{{ cliente.contacto_email }}</td>
+                        <td>{{ cliente.contacto_telefono }}</td>
+                        <td><span style="color: #28a745; font-weight: bold;">{{ cliente.activo|yesno:"Activo,Inactivo" }}</span></td>
+                        <td>€{{ cliente.total_facturacion|floatformat:2 }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-info btn-sm">👁️ Ver</button>
+                                <button class="btn btn-warning btn-sm">✏️ Editar</button>
+                                <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #999;">
+                            <strong>No se encontraron clientes</strong>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
