@@ -5,23 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello World - Django App</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'hello/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="container">
-        <h1 class="hello-title">¡Hola Mundo, {{ nombre }}! 🌍</h1>
+        <h1 class="hello-title">¡Hola Mundo! 🌍</h1>
         <p class="hello-subtitle">Este es tu primer proyecto Django con archivos estáticos</p>
 
-        <p>Estas son las ciudades más interesantes:<br>
-            <ul></ul>
-            {% for ciudad in ciudades %}
-                <li class="city">{{ ciudad.nombre }} del país {{ ciudad.pais }}</li>
-            {% endfor %}
-            </ul>
-        </p>
         
         <!-- Imagen usando archivos estáticos -->
-        <img src="{% static 'hello/images/django-logo.svg' %}" alt="Django Logo" class="django-logo">
+        <img src="{% static 'images/django-logo.svg' %}" alt="Django Logo" class="django-logo">
         
         <div class="features">
             <div class="feature">
@@ -48,6 +41,6 @@
     </div>
     
     <!-- JavaScript cargado desde archivos estáticos -->
-    <script src="{% static 'hello/js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
