@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.db.models import Sum
-from clientes.models import Cliente
+
+from core.clientes.ClienteModel import Cliente
+
 
 # Create your views here.
 

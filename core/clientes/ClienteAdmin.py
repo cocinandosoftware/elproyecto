@@ -1,9 +1,9 @@
 from django.contrib import admin
 
+from core.clientes.ClienteModel import Cliente
+
 # Register your models here.
 
-
-from .models import Cliente
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
     list_display = ('razon_social', 'nombre_comercial', 'nif', 'contacto_nombre', 'contacto_telefono', 'contacto_email', 'activo', 'total_facturacion')

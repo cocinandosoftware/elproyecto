@@ -1,9 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
-
-
 class Cliente(models.Model):
     fecha_alta = models.DateField(auto_now_add=True)
     razon_social = models.CharField(max_length=100)
