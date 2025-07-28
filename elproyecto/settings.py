@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'web',
     'core',
-    'contextos.clientes'
+    'contextos.authentication',
+    'contextos.clientes',
+    'contextos.desarrolladores',
+    'contextos.backoffice',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +130,11 @@ STATIC_ROOT = BASE_DIR / 'static'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Modelo de usuario personalizado
+AUTH_USER_MODEL = 'core.User'
+
+# URLs de autenticación
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/auth/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
