@@ -2,12 +2,11 @@ from django.shortcuts import render
 from django.db.models import Sum
 
 from core.clientes.ClienteModel import Cliente
-from core.decorators.auth_decorators import cliente_or_admin_required
 
 
 # Create your views here.
 
-@cliente_or_admin_required
+
 def listado(request):
 
     clientes = Cliente.objects.all()
