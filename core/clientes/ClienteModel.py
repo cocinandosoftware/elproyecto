@@ -10,3 +10,13 @@ class Cliente(models.Model):
     contacto_email = models.EmailField(blank=True, null=True)
     activo = models.BooleanField(default=True)
     total_facturacion = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+
+
+
+clientes = Cliente.objects.all()
+
+for cliente in clientes:
+    print(f"Cliente: {cliente}")
+    
+    # Aquí podrías agregar más lógica, como actualizar campos o realizar operaciones adicionales.

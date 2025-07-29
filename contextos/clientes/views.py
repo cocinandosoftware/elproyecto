@@ -14,10 +14,7 @@ def dashboard(request):
     """
     Dashboard específico para clientes
     """
-    if not request.user.es_cliente():
-        messages.error(request, 'No tienes permisos para acceder a esta área.')
-        return redirect('auth:dashboard')
-    
+
     context = {
         'usuario': request.user,
         'cliente': request.user.cliente_asociado,

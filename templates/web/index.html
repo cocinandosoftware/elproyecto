@@ -268,12 +268,14 @@
                 clientes y equipos de desarrollo.
             </p>
             <div class="cta-buttons">
+
                 {% if user.is_authenticated %}
                     <a href="{% url 'auth:dashboard' %}" class="btn btn-primary">Ir a mi Dashboard</a>
                 {% else %}
                     <a href="{% url 'auth:login' %}" class="btn btn-primary">Iniciar Sesión</a>
                     <a href="#features" class="btn btn-secondary">Conocer Más</a>
                 {% endif %}
+                
             </div>
         </div>
     </section>

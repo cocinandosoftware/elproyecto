@@ -11,7 +11,7 @@ def login_view(request):
     Vista para el login de usuarios
     """
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('auth:dashboard')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -37,7 +37,6 @@ def login_view(request):
     
     return render(request, 'auth/login.html')
 
-
 def logout_view(request):
     """
     Vista para el logout de usuarios
@@ -47,7 +46,6 @@ def logout_view(request):
         logout(request)
     
     return redirect('index')
-
 
 @login_required
 def dashboard_view(request):
