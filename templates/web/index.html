@@ -4,43 +4,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World - Django App</title>
+    <title>Gestión de Proyectos - Conectando Clientes y Desarrolladores</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .login-btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .features {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .how-it-works {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .how-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .how-it-works h2 {
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step {
+            padding: 2rem;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="hello-title">¡Hola Mundo! 🌍</h1>
-        <p class="hello-subtitle">Este es tu primer proyecto Django con archivos estáticos</p>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🚀 Gestión de Proyectos</div>
+            <div class="nav-links">
+                <a href="#features">Características</a>
+                <a href="#how-it-works">Cómo Funciona</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'auth:dashboard' %}">Dashboard</a>
+                    <a href="{% url 'auth:logout' %}">Cerrar Sesión</a>
+                {% else %}
+                    <a href="{% url 'auth:login' %}" class="login-btn">Iniciar Sesión</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
 
-        
-        <!-- Imagen usando archivos estáticos -->
-        <img src="{% static 'images/django-logo.svg' %}" alt="Django Logo" class="django-logo">
-        
-        <div class="features">
-            <div class="feature">
-                <h3>🎨 CSS</h3>
-                <p>Estilos personalizados cargados desde archivos estáticos</p>
-            </div>
-            <div class="feature">
-                <h3>🖼️ Imágenes</h3>
-                <p>Logo SVG servido como archivo estático</p>
-            </div>
-            <div class="feature">
-                <h3>⚡ JavaScript</h3>
-                <p>Interactividad con JS desde archivos estáticos</p>
-            </div>
-            <div class="feature">
-                <h3>📱 Responsive</h3>
-                <p>Diseño adaptable a diferentes pantallas</p>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Conectamos Clientes y Desarrolladores</h1>
+            <p>
+                La plataforma integral que facilita la gestión de proyectos, 
+                la comunicación efectiva y el seguimiento en tiempo real entre 
+                clientes y equipos de desarrollo.
+            </p>
+            <div class="cta-buttons">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'auth:dashboard' %}" class="btn btn-primary">Ir a mi Dashboard</a>
+                {% else %}
+                    <a href="{% url 'auth:login' %}" class="btn btn-primary">Iniciar Sesión</a>
+                    <a href="#features" class="btn btn-secondary">Conocer Más</a>
+                {% endif %}
             </div>
         </div>
-        
-        <p style="margin-top: 2rem; color: #666; font-size: 0.9rem;">
-            <strong>Tip:</strong> Haz clic en el logo de Django para ver una animación 🎭
-        </p>
-    </div>
-    
-    <!-- JavaScript cargado desde archivos estáticos -->
-    <script src="{% static 'js/main.js' %}"></script>
+    </section>
+
+    <section id="features" class="features">
+        <div class="features-container">
+            <h2>¿Por qué elegirnos?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3>Para Clientes</h3>
+                    <p>Gestiona tus proyectos, revisa el progreso en tiempo real y mantén comunicación directa con tu equipo de desarrollo.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <h3>Para Desarrolladores</h3>
+                    <p>Accede a proyectos organizados, gestiona tareas eficientemente y mantén a tus clientes siempre informados.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">�</div>
+                    <h3>Seguimiento Completo</h3>
+                    <p>Reportes detallados, métricas de rendimiento y análisis que ayudan a optimizar cada proyecto.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Seguridad Total</h3>
+                    <p>Protección de datos empresarial, accesos controlados y respaldo completo de tu información.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Comunicación Fluida</h3>
+                    <p>Centro de mensajes integrado, notificaciones en tiempo real y herramientas de colaboración.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Eficiencia Máxima</h3>
+                    <p>Automatización de procesos, gestión inteligente de recursos y optimización de tiempos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works">
+        <div class="how-container">
+            <h2>Cómo Funciona</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Registro y Configuración</h3>
+                    <p>Regístrate en la plataforma y configura tu perfil según seas cliente o desarrollador.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Creación de Proyectos</h3>
+                    <p>Los clientes crean proyectos con especificaciones detalladas y asignan desarrolladores.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Desarrollo y Seguimiento</h3>
+                    <p>Los desarrolladores trabajan mientras los clientes monitorean el progreso en tiempo real.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Entrega y Feedback</h3>
+                    <p>Revisión, feedback y entrega final con documentación completa del proyecto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 Gestión de Proyectos. Conectando el futuro del desarrollo colaborativo.</p>
+    </footer>
 </body>
 </html>
