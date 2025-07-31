@@ -60,7 +60,7 @@ Una plataforma que permite hablar el mismo idioma a ambos lados del desarrollo. 
 ### Prerrequisitos
 - Python 3.8 o superior
 - pip (gestor de paquetes de Python)
-- Git
+- GitHub (Control de versiones)
 
 ### Pasos de Instalación
 
@@ -140,6 +140,9 @@ elproyecto/
 - [x] Plantillas base y navegación
 
 ### 🚧 Fase 2: Funcionalidades Core (En Desarrollo)
+- [ ] Creacion de un Readme.md inicial
+- [ ] Control de acceso a los contextos haciendo uso de decoradores
+- [ ] Diagrama inicial de nuestra base de datos para seguimiento futuro
 - [ ] Sistema CRM con listados y filtros
 - [ ] Gestión completa de proyectos
 - [ ] Dashboard diferenciado por roles
@@ -162,19 +165,70 @@ elproyecto/
 
 ## 📚 Documentación
 
-Para más información detallada, consulta la carpeta `docs/`:
+Para más información detallada, consulta:
+
+### 📋 Documentación del Proyecto
 - [Comandos Django](docs/COMANDOS_DJANGO.md)
 - [Comandos del Proyecto](docs/COMANDOS_PROYECTO.md)
 - [Datos Semilla](docs/DATOS_SEMILLA.md)
 - [Sistema de Autenticación](docs/SISTEMA_AUTENTICACION.md)
 - [Archivos Estáticos](docs/ARCHIVOS_ESTATICOS.md)
+- [Login en areas privadas] (dev_lucia / dev123 - cliente_laura / cliente123)
+
+### 🎥 Contenido Educativo
+- **Canal YouTube**: @CocinandoSoftware
+- **Commits**: Cada sesión tiene commits detallados con explicaciones
+- **Tags Git**: Navegación fácil entre sesiones (`v1.1`, `v1.2`, etc.)
+
+## 🎥 Siguiendo el Desarrollo en Vivo
+
+Este proyecto se desarrolla de forma **pública y documentada** a través del canal **@CocinandoSoftware** con sesiones de 45 minutos grabadas y publicadas en YouTube.
+
+### 📺 Cómo Seguir el Curso
+
+1. **YouTube**: Sesiones completas de desarrollo en tiempo real
+2. **GitHub**: Código fuente actualizado después de cada sesión
+3. **Tags de Git**: Cada sesión tiene su tag correspondiente (`v1.1`, `v1.2`, etc.)
+
+### 🏷️ Navegación por Sesiones
+
+Para ver el código en un momento específico del curso:
+
+```bash
+# Ver todas las sesiones disponibles
+git tag
+
+# Cambiar al código de una sesión específica
+git checkout v1.5  # Ejemplo: Sesión 5
+
+# Volver a la versión más reciente
+git checkout main
+
+# Ver los cambios de una sesión específica
+git log --oneline v1.4..v1.5
+```
+
+
+### 📚 Sesiones Realizadas
+
+- **Sesión 1**: Idea y definición del proyecto → `v1.1` | [📺 Ver en YouTube](#)
+- **Sesión 2**: Experimentando con la IA → `v1.2` | [📺 Ver en YouTube](#)
+- **Sesión 3**: Primer HelloWorld → `v1.3` | [📺 Ver en YouTube](#)
+- **Sesión 4**: HelloWorld otra vez + render y DB → `v1.4` | [📺 Ver en YouTube](#)
+- **Sesión 5**: Nuestro primer módulo funcional - Clientes → `v1.5` | [📺 Ver en YouTube](#)
+- **Sesión 6**: Contextos + Core → `v1.6` | [📺 Ver en YouTube](#)
+- **Sesión 7**: Autenticación y acceso a los contextos (desastre IA) → `v1.7` | [📺 Ver en YouTube](#)
+- **Sesión 8**: Autenticación y acceso a los contextos (final) → `v1.8` | [📺 Ver en YouTube](#)
+
+> 💡 **Tip**: Usa `git log --oneline v1.X..v1.Y` para ver los commits entre sesiones específicas.
 
 ## 🤝 Metodología de Desarrollo
 
-Este proyecto se desarrolla de forma **pública y documentada** a través del canal **@CocinandoSoftware**, permitiendo que:
-- Otros desarrolladores aprendan del proceso
-- Los clientes entiendan cómo se construye software de calidad
+Esta metodología educativa permite que:
+- Otros desarrolladores aprendan del proceso real de desarrollo
+- Los clientes entiendan cómo se construye software de calidad desde cero
 - La comunidad pueda hacer aportaciones y sugerencias
+- Se documente cada decisión técnica tomada
 
 ## 🤝 Contribuir
 
