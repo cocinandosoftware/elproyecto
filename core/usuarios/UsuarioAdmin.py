@@ -49,7 +49,6 @@ class UsuarioAdmin(UserAdmin):
                 'telefono', 
                 'fecha_ultimo_acceso', 
                 'activo',
-                'cliente_asociado'
             )
         }),
     )

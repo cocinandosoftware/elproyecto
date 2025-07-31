@@ -50,22 +50,13 @@ class Usuario(AbstractUser):
         help_text='Cliente asociado a este usuario'
     )
     
-    # TODO: Agregar cuando creemos el modelo Desarrollador
-    # desarrollador_asociado = models.ForeignKey(
-    #     'desarrolladores.Desarrollador',
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     related_name='usuarios'
-    # )
-    
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
         ordering = ['-date_joined']
     
     def __str__(self):
-        return f"{self.username} ({self.get_tipo_usuario_display()})"
+        return f"{self.username} - {self.get_tipo_usuario_display()}"
     
     @property
     def nombre_completo(self):
