@@ -6,3 +6,7 @@ class Desarrollador(models.Model):
     perfil = models.CharField(max_length=20)
     activo = models.BooleanField(default=True)
 
+
+    def __str__(self):
+        return self.nombre
+

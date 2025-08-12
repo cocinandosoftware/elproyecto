@@ -22,6 +22,25 @@ class Usuario(AbstractUser):
         help_text='Tipo de usuario en el sistema'
     )
     
+    # Relaciones con clientes y desarrolladores (opcional, para flexibilidad)
+    cliente_asociado = models.ForeignKey(
+        'core.Cliente',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='usuarios',
+        help_text='Cliente asociado a este usuario'
+    )
+
+    desarrollador_asociado = models.ForeignKey(
+        'core.Desarrollador',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='usuarios',
+        help_text='Desarrollador asociado a este usuario'
+    )
+
     telefono = models.CharField(
         max_length=15, 
         blank=True, 
@@ -40,16 +59,7 @@ class Usuario(AbstractUser):
         help_text='Usuario activo en el sistema'
     )
     
-    # Relaciones con clientes y desarrolladores (opcional, para flexibilidad)
-    cliente_asociado = models.ForeignKey(
-        'core.Cliente',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='usuarios',
-        help_text='Cliente asociado a este usuario'
-    )
-    
+
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'

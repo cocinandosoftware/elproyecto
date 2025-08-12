@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from core.desarrolladores.DesarrolladorModel import Desarrollador
 from core.usuarios.UsuarioModel import Usuario
 from core.clientes.ClienteModel import Cliente
 from core.proyectos.ProyectoModel import Proyecto
@@ -27,15 +26,15 @@ class Command(BaseCommand):
             self.reset_data()
 
         with transaction.atomic():
-            
-            # Crear clientes 
+            # Crear clientes empresa
             clientes = self.create_clientes()
+            
+            # Crear usuarios clientes
             usuarios_clientes = self.create_usuarios_clientes(clientes)
             
             # Crear usuarios desarrolladores
-            desarrolladores = self.create_desarrolladores()
-            usuarios_desarrolladores = self.create_usuarios_desarrolladores(desarrolladores)
-
+            usuarios_desarrolladores = self.create_usuarios_desarrolladores()
+            
             # Crear algunos proyectos
             proyectos = self.create_proyectos()
 
@@ -51,7 +50,6 @@ class Command(BaseCommand):
         # Eliminar en orden correcto para evitar problemas de claves foráneas
         Usuario.objects.filter(is_superuser=False).delete()
         Proyecto.objects.all().delete()
-        Desarrollador.objects.all().delete()
         Cliente.objects.all().delete()
         
         self.stdout.write(
@@ -70,6 +68,42 @@ class Command(BaseCommand):
                 'contacto_telefono': '+34 600 123 456',
                 'contacto_email': 'maria.garcia@techinno.es',
                 'total_facturacion': Decimal('50000.00')
+            },
+            {
+                'razon_social': 'Desarrollo Web Profesional S.A.',
+                'nombre': 'WebPro',
+                'nif': '87654321B',
+                'contacto_nombre': 'Carlos Rodríguez',
+                'contacto_telefono': '+34 600 234 567',
+                'contacto_email': 'carlos.rodriguez@webpro.es',
+                'total_facturacion': Decimal('75000.00')
+            },
+            {
+                'razon_social': 'Startup Digital Solutions',
+                'nombre': 'DigitalStart',
+                'nif': '11223344C',
+                'contacto_nombre': 'Ana Martínez',
+                'contacto_telefono': '+34 600 345 678',
+                'contacto_email': 'ana.martinez@digitalstart.es',
+                'total_facturacion': Decimal('25000.00')
+            },
+            {
+                'razon_social': 'E-Commerce Global S.L.',
+                'nombre': 'EcomGlobal',
+                'nif': '55667788D',
+                'contacto_nombre': 'Pedro López',
+                'contacto_telefono': '+34 600 456 789',
+                'contacto_email': 'pedro.lopez@ecomglobal.es',
+                'total_facturacion': Decimal('120000.00')
+            },
+            {
+                'razon_social': 'Fintech Innovations S.A.',
+                'nombre': 'FintechInn',
+                'nif': '99887766E',
+                'contacto_nombre': 'Laura Sánchez',
+                'contacto_telefono': '+34 600 567 890',
+                'contacto_email': 'laura.sanchez@fintechinn.es',
+                'total_facturacion': Decimal('90000.00')
             }
         ]
         
@@ -94,6 +128,46 @@ class Command(BaseCommand):
                 'tipo_usuario': 'cliente',
                 'telefono': '+34 600 123 456',
                 'cliente_asociado': clientes[0]
+            },
+            {
+                'username': 'cliente_carlos',
+                'email': 'carlos.rodriguez@webpro.es',
+                'first_name': 'Carlos',
+                'last_name': 'Rodríguez',
+                'password': 'cliente123',
+                'tipo_usuario': 'cliente',
+                'telefono': '+34 600 234 567',
+                'cliente_asociado': clientes[1]
+            },
+            {
+                'username': 'cliente_ana',
+                'email': 'ana.martinez@digitalstart.es',
+                'first_name': 'Ana',
+                'last_name': 'Martínez',
+                'password': 'cliente123',
+                'tipo_usuario': 'cliente',
+                'telefono': '+34 600 345 678',
+                'cliente_asociado': clientes[2]
+            },
+            {
+                'username': 'cliente_pedro',
+                'email': 'pedro.lopez@ecomglobal.es',
+                'first_name': 'Pedro',
+                'last_name': 'López',
+                'password': 'cliente123',
+                'tipo_usuario': 'cliente',
+                'telefono': '+34 600 456 789',
+                'cliente_asociado': clientes[3]
+            },
+            {
+                'username': 'cliente_laura',
+                'email': 'laura.sanchez@fintechinn.es',
+                'first_name': 'Laura',
+                'last_name': 'Sánchez',
+                'password': 'cliente123',
+                'tipo_usuario': 'cliente',
+                'telefono': '+34 600 567 890',
+                'cliente_asociado': clientes[4]
             }
         ]
         
@@ -108,25 +182,7 @@ class Command(BaseCommand):
         
         return usuarios_clientes
 
-    def create_desarrolladores(self):
-        self.stdout.write('💻 Creando usuarios desarrolladores...')
-        
-        desarrolladores_data = [
-            {
-                'nombre': 'Alberto Fernández',
-                'perfil': 'Full Stack Developer',
-            }
-        ]
-        
-        desarrolladores = []
-        for desarrollador_data in desarrolladores_data:
-            desarrollador = Desarrollador.objects.create(**desarrollador_data)
-            desarrolladores.append(desarrollador)
-            self.stdout.write(f'   ✓ Desarrollador: {desarrollador.nombre}')
-
-        return desarrolladores
-
-    def create_usuarios_desarrolladores(self, desarrolladores):
+    def create_usuarios_desarrolladores(self):
         self.stdout.write('💻 Creando usuarios desarrolladores...')
         
         usuarios_dev_data = [
@@ -137,8 +193,52 @@ class Command(BaseCommand):
                 'last_name': 'Fernández',
                 'password': 'dev123',
                 'tipo_usuario': 'desarrollador',
-                'telefono': '+34 700 111 222',
-                'desarrollador_asociado': desarrolladores[0]
+                'telefono': '+34 700 111 222'
+            },
+            {
+                'username': 'dev_sofia',
+                'email': 'sofia.dev@cocinandosoftware.es',
+                'first_name': 'Sofía',
+                'last_name': 'González',
+                'password': 'dev123',
+                'tipo_usuario': 'desarrollador',
+                'telefono': '+34 700 222 333'
+            },
+            {
+                'username': 'dev_miguel',
+                'email': 'miguel.dev@cocinandosoftware.es',
+                'first_name': 'Miguel',
+                'last_name': 'Ruiz',
+                'password': 'dev123',
+                'tipo_usuario': 'desarrollador',
+                'telefono': '+34 700 333 444'
+            },
+            {
+                'username': 'dev_elena',
+                'email': 'elena.dev@cocinandosoftware.es',
+                'first_name': 'Elena',
+                'last_name': 'Torres',
+                'password': 'dev123',
+                'tipo_usuario': 'desarrollador',
+                'telefono': '+34 700 444 555'
+            },
+            {
+                'username': 'dev_javier',
+                'email': 'javier.dev@cocinandosoftware.es',
+                'first_name': 'Javier',
+                'last_name': 'Moreno',
+                'password': 'dev123',
+                'tipo_usuario': 'desarrollador',
+                'telefono': '+34 700 555 666'
+            },
+            {
+                'username': 'dev_lucia',
+                'email': 'lucia.dev@cocinandosoftware.es',
+                'first_name': 'Lucía',
+                'last_name': 'Jiménez',
+                'password': 'dev123',
+                'tipo_usuario': 'desarrollador',
+                'telefono': '+34 700 666 777'
             }
         ]
         
@@ -158,6 +258,13 @@ class Command(BaseCommand):
         
         proyectos_data = [
             {'nombre': 'Plataforma E-commerce'},
+            {'nombre': 'App Móvil Fintech'},
+            {'nombre': 'Sistema de Gestión CRM'},
+            {'nombre': 'Portal Web Corporativo'},
+            {'nombre': 'API REST Microservicios'},
+            {'nombre': 'Dashboard Analytics'},
+            {'nombre': 'Sistema de Facturación'},
+            {'nombre': 'Marketplace Digital'}
         ]
         
         proyectos = []

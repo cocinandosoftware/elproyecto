@@ -15,6 +15,8 @@ class UsuarioAdmin(UserAdmin):
         'email', 
         'nombre_completo', 
         'tipo_usuario', 
+        'cliente_asociado',
+        'desarrollador_asociado',
         'activo', 
         'is_staff', 
         'date_joined',
@@ -39,15 +41,15 @@ class UsuarioAdmin(UserAdmin):
     )
     
     # Orden por defecto
-    ordering = ('-date_joined',)
+    ordering = ('username',)
     
     # Configuración de los fieldsets (cómo se organizan los campos en el formulario)
     fieldsets = UserAdmin.fieldsets + (
         ('Información Adicional', {
             'fields': (
                 'tipo_usuario', 
-                'telefono', 
-                'fecha_ultimo_acceso', 
+                'cliente_asociado',
+                'desarrollador_asociado',
                 'activo',
             )
         }),
@@ -57,11 +59,12 @@ class UsuarioAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Información Adicional', {
             'fields': (
-                'tipo_usuario', 
-                'telefono', 
                 'email',
                 'first_name',
-                'last_name'
+                'last_name',
+                'tipo_usuario',
+                'cliente_asociado',
+                'desarrollador_asociado',
             )
         }),
     )
