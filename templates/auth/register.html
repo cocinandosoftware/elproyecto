@@ -1,0 +1,390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Gestión de Proyectos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .register-left {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .register-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .register-left p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .register-right {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .register-form h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group select {
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .messages {
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .auth-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                grid-template-columns: 1fr;
+                margin: 20px;
+            }
+
+            .register-left {
+                padding: 2rem;
+            }
+
+            .register-right {
+                padding: 2rem;
+            }
+
+            .register-left h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Obtener elementos del DOM
+            const password1 = document.getElementById('password1');
+            const password2 = document.getElementById('password2');
+            const form = document.querySelector('.register-form');
+            const username = document.getElementById('username');
+            const email = document.getElementById('email');
+            
+            // Validación en tiempo real de contraseñas
+            function validatePasswords() {
+
+                if (password1.value && password2.value) {
+                    if (password1.value !== password2.value) {
+                        password2.setCustomValidity('Las contraseñas no coinciden');
+                        password2.style.borderColor = '#e74c3c';
+                    } else {
+                        password2.setCustomValidity('');
+                        password2.style.borderColor = '#28a745';
+                    }
+                }
+            }
+
+            // Observar cambios en los campos 
+            password1.addEventListener('input', validatePasswords);
+            password2.addEventListener('input', validatePasswords);
+            
+            // Validación del username
+            username.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                this.value = value;
+            });
+            
+            // Validación del email
+            email.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                this.value = value;
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-left">
+            <h1>✨ Únete a Nosotros</h1>
+            <p>
+                Crea tu cuenta y forma parte de nuestra plataforma de gestión de proyectos.
+                Conecta como cliente para publicar proyectos o como desarrollador para colaborar en proyectos increíbles.
+            </p>
+        </div>
+        
+        <div class="register-right">
+            <form method="post" class="register-form">
+                <h2>Crear Cuenta</h2>
+                
+                {% csrf_token %}
+                
+                <!-- Mostrar mensajes -->
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">Nombre <span class="required">*</span></label>
+                        <input 
+                            type="text" 
+                            id="first_name" 
+                            name="first_name" 
+                            required 
+                            placeholder="Tu nombre"
+                            value=""
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="last_name">Apellidos <span class="required">*</span></label>
+                        <input 
+                            type="text" 
+                            id="last_name" 
+
+                            placeholder="Apellidos"
+                            value=""
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username">Nombre de Usuario <span class="required">*</span></label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required 
+                            autocomplete="username"
+                            placeholder="Elige un nombre de usuario"
+                            value=""
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            required 
+                            autocomplete="email"
+                            placeholder="tu@email.com"
+                            value=""
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password1">Contraseña <span class="required">*</span></label>
+                        <input 
+                            type="password" 
+                            id="password1" 
+                            name="password1" 
+                            required 
+                            autocomplete="new-password"
+                            placeholder="Mínimo 8 caracteres"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password2">Repetir Contraseña <span class="required">*</span></label>
+                        <input 
+                            type="password" 
+                            id="password2" 
+                            name="password2" 
+                            required 
+                            autocomplete="new-password"
+                            placeholder="Confirma tu contraseña"
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipo_usuario">Tipo de Usuario <span class="required">*</span></label>
+                        <select id="tipo_usuario" name="tipo_usuario" required>
+                            <option value="">Selecciona tu rol</option>
+                            <option value="cliente">
+                                Cliente - Tengo proyectos para desarrollar
+                            </option>
+                            <option value="desarrollador">
+                                Desarrollador - Quiero trabajar en proyectos
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono (Opcional)</label>
+                        <input 
+                            type="tel" 
+                            id="telefono" 
+                            name="telefono" 
+                            placeholder="+34 123 456 789"
+                            value=""
+                        >
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-register">
+                    Crear Cuenta
+                </button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="{% url 'auth:login' %}">¿Ya tienes cuenta? Iniciar sesión</a>
+                <a href="{% url 'index' %}">← Volver a la página principal</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

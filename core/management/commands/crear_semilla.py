@@ -37,7 +37,7 @@ class Command(BaseCommand):
             usuarios_desarrolladores = self.create_usuarios_desarrolladores(desarrolladores)
 
             # Crear algunos proyectos
-            proyectos = self.create_proyectos()
+            proyectos = self.create_proyectos(usuarios_clientes, usuarios_desarrolladores)
 
         self.stdout.write(
             self.style.SUCCESS('\n✅ Datos de semilla creados exitosamente!')
@@ -153,11 +153,15 @@ class Command(BaseCommand):
         
         return usuarios_desarrolladores
 
-    def create_proyectos(self):
+    def create_proyectos(self, usuarios_clientes, usuarios_desarrolladores):
         self.stdout.write('🚀 Creando proyectos de ejemplo...')
         
         proyectos_data = [
-            {'nombre': 'Plataforma E-commerce'},
+            {'nombre': 'Plataforma E-commerce',
+             'cliente': usuarios_clientes[0],
+             'desarrollador': usuarios_desarrolladores[0]
+            },
+
         ]
         
         proyectos = []

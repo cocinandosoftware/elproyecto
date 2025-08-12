@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+from django.db import transaction
 from core.usuarios.UsuarioModel import Usuario
 
 
@@ -36,6 +37,109 @@ def login_view(request):
             messages.error(request, 'Usuario o contraseña incorrectos.')
     
     return render(request, 'auth/login.html')
+
+def register_view(request):
+    """
+    Vista para el registro de nuevos usuarios (clientes y desarrolladores)
+    """
+    if request.user.is_authenticated:
+        return redirect('auth:login')
+    
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        username = request.POST.get('username', '').strip().lower()
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        tipo_usuario = request.POST.get('tipo_usuario')
+        telefono = request.POST.get('telefono', '').strip()
+        
+        # Validaciones
+        errors = []
+        
+        if not first_name:
+            errors.append('El nombre es obligatorio.')
+        elif len(first_name) < 2:
+            errors.append('El nombre debe tener al menos 2 caracteres.')
+        
+        if not last_name:
+            errors.append('Los apellidos son obligatorios.')
+        elif len(last_name) < 2:
+            errors.append('Los apellidos deben tener al menos 2 caracteres.')
+        
+        if not email:
+            errors.append('El email es obligatorio.')
+        elif Usuario.objects.filter(email=email).exists():
+            errors.append('Ya existe un usuario con este email.')
+        elif '@' not in email or '.' not in email:
+            errors.append('El formato del email no es válido.')
+        
+        if not username:
+            errors.append('El nombre de usuario es obligatorio.')
+        elif len(username) < 3:
+            errors.append('El nombre de usuario debe tener al menos 3 caracteres.')
+        elif Usuario.objects.filter(username=username).exists():
+            errors.append('Ya existe un usuario con este nombre de usuario.')
+        elif not username.replace('_', '').replace('-', '').isalnum():
+            errors.append('El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.')
+        
+        if not password1:
+            errors.append('La contraseña es obligatoria.')
+        elif len(password1) < 8:
+            errors.append('La contraseña debe tener al menos 8 caracteres.')
+        elif password1.isdigit():
+            errors.append('La contraseña no puede ser solo números.')
+        elif password1.lower() in [username.lower(), email.lower(), first_name.lower(), last_name.lower()]:
+            errors.append('La contraseña no puede ser similar a tu información personal.')
+        
+        if password1 != password2:
+            errors.append('Las contraseñas no coinciden.')
+        
+        if tipo_usuario not in ['cliente', 'desarrollador']:
+            errors.append('Debe seleccionar un tipo de usuario válido.')
+        
+        # Validar teléfono si se proporciona
+        if telefono:
+            # Limpiar el teléfono de espacios y caracteres especiales
+            telefono_clean = ''.join(filter(str.isdigit, telefono.replace('+', '')))
+            if len(telefono_clean) < 9:
+                errors.append('El número de teléfono debe tener al menos 9 dígitos.')
+        
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'auth/register.html', {
+                'form_data': request.POST
+            })
+        
+        try:
+            with transaction.atomic():
+                # Crear el usuario
+                user = Usuario.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password1,
+                    first_name=first_name,
+                    last_name=last_name,
+                    tipo_usuario=tipo_usuario,
+                    telefono=telefono if telefono else None
+                )
+                
+                messages.success(request, f'¡Registro exitoso! Bienvenido {user.nombre_completo}.')
+                
+                # Autenticar y hacer login automáticamente
+                user = authenticate(request, username=username, password=password1)
+                if user:
+                    login(request, user)
+                    user.actualizar_ultimo_acceso()
+                    return redirect('auth:dashboard')
+                
+        except Exception as e:
+            messages.error(request, f'Error al crear el usuario: {str(e)}')
+    
+    return render(request, 'auth/register.html')
 
 def logout_view(request):
     """
