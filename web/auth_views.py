@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from django.db import transaction
+from core.clientes.ClienteModel import Cliente
+from core.desarrolladores.DesarrolladorModel import Desarrollador
 from core.usuarios.UsuarioModel import Usuario
 
 
@@ -46,6 +48,9 @@ def register_view(request):
         return redirect('auth:login')
     
     if request.method == 'POST':
+
+        print("Datos del formulario:", request.POST)  # Debugging line to check form data
+        
         # Obtener datos del formulario
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
@@ -116,30 +121,50 @@ def register_view(request):
         
         try:
             with transaction.atomic():
-                # Crear el usuario
-                user = Usuario.objects.create_user(
-                    username=username,
-                    email=email,
-                    password=password1,
-                    first_name=first_name,
-                    last_name=last_name,
-                    tipo_usuario=tipo_usuario,
-                    telefono=telefono if telefono else None
-                )
+
+
+                if tipo_usuario == 'cliente':
+                    cliente = Cliente()
+                    cliente.nombre = first_name
+                    cliente.razon_social = last_name
+                    # cliente.nif = ""
+                    cliente.contacto_nombre = first_name
+                    cliente.contacto_email = email
+                    cliente.contacto_telefono = telefono if telefono else None
+                    cliente.save()
+
+                elif tipo_usuario == 'desarrollador':
+                    desarrollador = Desarrollador()
+                    desarrollador.nombre = first_name
+                    # desarrollador.perfil = 'desarrollador'
+                    desarrollador.save()
+
+                                # Crear el usuario
+                user = Usuario()
+                user.username = username
+                user.email = email
+                user.set_password(password1)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.tipo_usuario = tipo_usuario
                 
+                if tipo_usuario == 'cliente':
+                    user.cliente_asociado = cliente
+                elif tipo_usuario == 'desarrollador':
+                    user.desarrollador_asociado = desarrollador
+
+                user.telefono = telefono if telefono else None
+                user.save()
+
                 messages.success(request, f'¡Registro exitoso! Bienvenido {user.nombre_completo}.')
                 
-                # Autenticar y hacer login automáticamente
-                user = authenticate(request, username=username, password=password1)
-                if user:
-                    login(request, user)
-                    user.actualizar_ultimo_acceso()
-                    return redirect('auth:dashboard')
+                return redirect('auth:login')
                 
         except Exception as e:
             messages.error(request, f'Error al crear el usuario: {str(e)}')
     
     return render(request, 'auth/register.html')
+
 
 def logout_view(request):
     """
