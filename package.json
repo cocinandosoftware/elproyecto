@@ -1,0 +1,28 @@
+{
+  "name": "elproyecto",
+  "version": "1.0.0",
+  "description": "**Cocinando Software** - El entorno para que clientes y desarrolladores cocinen sus proyectos",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "sass:watch": "sass web/scss/main.scss web/static/css/main.css --style=compressed --no-source-map --watch",
+    "sass:build": "sass web/scss/main.scss web/static/css/main.css --style=compressed --no-source-map"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cocinandosoftware/elproyecto.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/cocinandosoftware/elproyecto/issues"
+  },
+  "homepage": "https://github.com/cocinandosoftware/elproyecto#readme",
+  "devDependencies": {
+    "sass": "^1.90.0"
+  }
+}

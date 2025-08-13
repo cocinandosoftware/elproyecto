@@ -253,3 +253,10 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 ---
 
 ⭐ Si este proyecto te resulta útil, ¡no olvides darle una estrella!
+
+
+## Uso de SCSS 
+- Configuración en package.json
+```bash
+npm run sass:watch
+```
