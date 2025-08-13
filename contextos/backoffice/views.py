@@ -24,7 +24,7 @@ def dashboard(request):
         }
     }
     
-    return render(request, 'dashboard/backoffice.html', context)
+    return render(request, 'backoffice/dashboard.html', context)
 
 
 @admin_required

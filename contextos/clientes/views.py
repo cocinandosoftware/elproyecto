@@ -18,7 +18,7 @@ def dashboard(request):
         'cliente': request.user.cliente_asociado,
     }
     
-    return render(request, 'dashboard/cliente.html', context)
+    return render(request, 'clientes/dashboard.html', context)
 
 
 

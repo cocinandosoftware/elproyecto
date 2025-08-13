@@ -38,7 +38,7 @@ def login_view(request):
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
     
-    return render(request, 'auth/login.html')
+    return render(request, 'web/auth/login.html')
 
 def register_view(request):
     """
@@ -115,7 +115,7 @@ def register_view(request):
         if errors:
             for error in errors:
                 messages.error(request, error)
-            return render(request, 'auth/register.html', {
+            return render(request, 'web/auth/register.html', {
                 'form_data': request.POST
             })
         
@@ -163,7 +163,7 @@ def register_view(request):
         except Exception as e:
             messages.error(request, f'Error al crear el usuario: {str(e)}')
     
-    return render(request, 'auth/register.html')
+    return render(request, 'web/auth/register.html')
 
 
 def logout_view(request):

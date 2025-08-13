@@ -1,0 +1,104 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro - Gestión de Proyectos</title>
+
+  <link rel="stylesheet" href="{% static 'css/register.css' %}" />
+
+</head>
+<body>
+  <div class="register-container">
+    <div class="register-left">
+      <h1>✨ Únete a Nosotros</h1>
+      <p>
+        Crea tu cuenta y forma parte de nuestra plataforma de gestión de proyectos.
+        Conecta como cliente para publicar proyectos o como desarrollador para colaborar en proyectos increíbles.
+      </p>
+    </div>
+
+    <div class="register-right">
+      <!-- 1) novalidate desactiva la validación nativa del navegador -->
+      <!-- 2) onsubmit llama a send_register(event) para bloquear el POST y validar custom -->
+      <form method="post" class="register-form" id="registerForm" novalidate>
+        <h2>Crear Cuenta</h2>
+
+        {% csrf_token %}
+
+        <div id="formMessages" class="messages" aria-live="polite"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="first_name">Nombre <span class="required">*</span></label>
+            <input type="text" id="first_name" name="first_name" placeholder="Tu nombre" autocomplete="given-name" />
+            <div class="field-error" id="err_first_name"></div>
+          </div>
+          <div class="form-group">
+            <label for="last_name">Apellidos <span class="required">*</span></label>
+            <input type="text" id="last_name" name="last_name" placeholder="Apellidos" autocomplete="family-name" />
+            <div class="field-error" id="err_last_name"></div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="username">Nombre de Usuario <span class="required">*</span></label>
+            <input type="text" id="username" name="username" autocomplete="username" placeholder="Elige un nombre de usuario" />
+            <div class="field-error" id="err_username"></div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="tu@email.com" />
+            <div class="field-error" id="err_email"></div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password1">Contraseña <span class="required">*</span></label>
+            <input type="password" id="password1" name="password1" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
+            <div class="field-error" id="err_password1"></div>
+          </div>
+          <div class="form-group">
+            <label for="password2">Repetir Contraseña <span class="required">*</span></label>
+            <input type="password" id="password2" name="password2" autocomplete="new-password" placeholder="Confirma tu contraseña" />
+            <div class="field-error" id="err_password2"></div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tipo_usuario">Tipo de Usuario <span class="required">*</span></label>
+            <select id="tipo_usuario" name="tipo_usuario">
+              <option value="">Selecciona tu rol</option>
+              <option value="cliente">Cliente - Tengo proyectos para desarrollar</option>
+              <option value="desarrollador">Desarrollador - Quiero trabajar en proyectos</option>
+            </select>
+            <div class="field-error" id="err_tipo_usuario"></div>
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono (Opcional)</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="+34 612 345 678" />
+            <div class="field-error" id="err_telefono"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-register">Crear Cuenta</button>
+      </form>
+
+      <div class="auth-links">
+
+        <a href="{% url 'auth:login' %}" id="fakeLogin">¿Ya tienes cuenta? Iniciar sesión</a>
+        <a href="{% url 'index' %}" id="fakeHome">← Volver a la página principal</a>
+
+      </div>
+    </div>
+  </div>
+
+
+<script src="{% static 'js/auth.register.js' %}"></script>
+</body>
+</html>

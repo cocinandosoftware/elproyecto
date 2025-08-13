@@ -9,8 +9,8 @@ def dashboard(request):
     context = {
         'usuario': request.user,
     }
-    
-    return render(request, 'dashboard/desarrollador.html', context)
+
+    return render(request, 'desarrolladores/dashboard.html', context)
 
 
 @desarrollador_required

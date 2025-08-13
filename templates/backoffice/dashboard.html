@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Backoffice - Gestión de Proyectos</title>
+
+    <link rel="stylesheet" href="{% static 'css/backoffice.css' %}">
+    
+</head>
+<body>
+    <header class="header">
+        <h1>🛠️ Dashboard Backoffice</h1>
+        <div class="user-info">
+            <a href="/admin/" class="admin-btn">Panel Admin</a>
+            <span>{{ usuario.nombre_completo }}</span>
+            <a href="{% url 'auth:logout' %}" class="logout-btn">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <!-- Mostrar mensajes -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Panel de Administración</h2>
+            <p>Bienvenido al centro de control administrativo. Desde aquí puedes gestionar usuarios, monitorear proyectos y controlar todo el sistema.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.total_usuarios }}</span>
+                <span class="stat-label">Total Usuarios</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.usuarios_activos }}</span>
+                <span class="stat-label">Usuarios Activos</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.clientes }}</span>
+                <span class="stat-label">Clientes</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.desarrolladores }}</span>
+                <span class="stat-label">Desarrolladores</span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>👥 Gestión de Usuarios</h3>
+                <p>Administra usuarios, roles y permisos del sistema.</p>
+                <a href="/admin/core/usuario/" class="card-action">Gestionar Usuarios</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>🏢 Gestión de Clientes</h3>
+                <p>Administra la información de clientes y empresas.</p>
+                <a href="/admin/core/cliente/" class="card-action">Gestionar Clientes</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>🚀 Gestión de Proyectos</h3>
+                <p>Supervisa todos los proyectos del sistema.</p>
+                <a href="/admin/core/proyecto/" class="card-action">Gestionar Proyectos</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>📊 Reportes Avanzados</h3>
+                <p>Genera reportes detallados y estadísticas del sistema.</p>
+                <a href="#" class="card-action">Ver Reportes</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>🔧 Configuración del Sistema</h3>
+                <p>Ajustes globales y configuración de la plataforma.</p>
+                <a href="#" class="card-action">Configurar</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>🔒 Seguridad y Auditoría</h3>
+                <p>Monitoreo de seguridad y logs del sistema.</p>
+                <a href="#" class="card-action">Ver Auditoría</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>💰 Gestión Financiera</h3>
+                <p>Control de facturación y aspectos financieros.</p>
+                <a href="#" class="card-action">Ver Finanzas</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>📧 Centro de Comunicaciones</h3>
+                <p>Gestión de notificaciones y comunicaciones masivas.</p>
+                <a href="#" class="card-action">Ver Comunicaciones</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
