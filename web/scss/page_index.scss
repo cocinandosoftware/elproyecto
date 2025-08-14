@@ -1,4 +1,4 @@
-@use "../variables" as *;
+@use "variables" as *;
 
 * {
   margin: 0;
@@ -138,34 +138,34 @@ body {
     font-size: 2.5rem;
     color: $color-text;
   }
+}
 
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
 
-    .feature-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      transition: transform 0.3s ease;
+.feature-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
 
-      &:hover {
-        transform: translateY(-5px);
-      }
+  &:hover {
+    transform: translateY(-5px);
+  }
 
-      .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-      }
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
 
-      h3 {
-        margin-bottom: 1rem;
-        color: $color-primary;
-      }
-    }
+  h3 {
+    margin-bottom: 1rem;
+    color: $color-primary;
   }
 }
 
@@ -184,30 +184,30 @@ body {
     font-size: 2.5rem;
     color: $color-text;
   }
+}
 
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
 
-    .step {
-      padding: 2rem;
+.step {
+  padding: 2rem;
 
-      .step-number {
-        background: $color-primary;
-        color: white;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 0 auto 1rem;
-      }
-    }
+  .step-number {
+    background: $color-primary;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
   }
 }
 

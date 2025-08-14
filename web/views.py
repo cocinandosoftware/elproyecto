@@ -6,3 +6,9 @@ from django.http import HttpResponse
 
 def index(request):
     return render(request, 'web/index.html')
+
+def test_index(request):
+    return render(request, 'web/test_index.html')
+
+def test_main(request):
+    return render(request, 'web/test_main.html')

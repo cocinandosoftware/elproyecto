@@ -1,32 +1,65 @@
-@use "../variables" as *;
-@use "../mixins" as *;
+@use "variables" as *;
+@use "mixins" as *;
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
+// Solo aplicar estos estilos en páginas de registro
+body.register-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
-  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 0;
 }
 
 .register-container {
-  background: #fff; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,.1); overflow: hidden;
-  max-width: 1000px; width: 100%;
-  display: grid; grid-template-columns: 1fr 1fr; min-height: 600px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 1000px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
 
   .register-left {
     background: linear-gradient(45deg, $color-primary, $color-secondary);
-    color: #fff; padding: 3rem; display: flex; flex-direction: column; justify-content: center; text-align: center;
+    color: white;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 
-    h1 { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 300; }
-    p  { font-size: 1.1rem; opacity: .9; line-height: 1.6; }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
   }
 
   .register-right {
-    padding: 3rem; display: flex; flex-direction: column; justify-content: center;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     .register-form {
-      h2 { color: #333; margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 400; text-align: center; }
+      h2 {
+        color: $color-text;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        font-weight: 400;
+        text-align: center;
+      }
     }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
