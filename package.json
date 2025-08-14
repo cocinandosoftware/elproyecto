@@ -7,8 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "sass:watch": "sass web/scss/main.scss web/static/css/main.css --style=compressed --no-source-map --watch",
-    "sass:build": "sass web/scss/main.scss web/static/css/main.css --style=compressed --no-source-map"
+    "web-sass:watch": "sass web/scss/main.scss web/static/css/main.css --style=compressed --no-source-map --watch",
+    "web-sass:build": "sass web/scss/main.scss web/static/css/main.css --style=compressed --no-source-map",
+    "contextos-sass:watch": "sass contextos/scss/main.scss contextos/static/css/contextos_main.css --style=compressed --no-source-map --watch",
+    "contextos-sass:build": "sass contextos/scss/main.scss contextos/static/css/contextos_main.css --style=compressed --no-source-map"
   },
   "repository": {
     "type": "git",

@@ -11,6 +11,7 @@
 
 </head>
 <body class="register-page">
+
   <div class="register-container">
     <div class="register-left">
       <h1>✨ Únete a Nosotros</h1>
@@ -24,6 +25,7 @@
       <!-- 1) novalidate desactiva la validación nativa del navegador -->
       <!-- 2) onsubmit llama a send_register(event) para bloquear el POST y validar custom -->
       <form method="post" class="register-form" id="registerForm" novalidate>
+        
         <h2>Crear Cuenta</h2>
 
         {% csrf_token %}
@@ -86,7 +88,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-register">Crear Cuenta</button>
+        <button type="submit" class="btn-form">Crear Cuenta</button>
       </form>
 
       <div class="auth-links">

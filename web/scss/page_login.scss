@@ -1,14 +1,19 @@
 @use "variables" as *;
 @use "mixins" as *;
 
-// Solo aplicar estos estilos en páginas de registro
-.register-page {
+.login-page {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .auth-links {
+        a { 
+            line-height: 0.3rem;
+        }
+    }
 }
 
-.register-container {
+.login-container {
   background: white;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -20,7 +25,7 @@
   min-height: 600px;
 
 
-  .register-left {
+  .login-left {
     background: linear-gradient(45deg, $color-primary, $color-secondary);
     color: white;
     padding: 3rem;
@@ -30,7 +35,7 @@
     text-align: center;
   }
 
-  .register-right {
+  .login-right {
     padding: 3rem;
     display: flex;
     flex-direction: column;
@@ -39,10 +44,12 @@
   }
 }
 
+
+
 @media (max-width: 768px) {
-  .register-container { grid-template-columns: 1fr; margin: 20px; }
-  .register-left { padding: 2rem; }
-  .register-right { padding: 2rem; }
-  .register-left h1 { font-size: 2rem; }
+  .login-container { grid-template-columns: 1fr; margin: 20px; }
+  .login-left { padding: 2rem; }
+  .login-right { padding: 2rem; }
+  .login-left h1 { font-size: 2rem; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
 }
