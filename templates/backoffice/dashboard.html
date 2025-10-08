@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Backoffice - Gestión de Proyectos</title>
 
-    <link rel="stylesheet" href="{% static 'css/backoffice.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Backoffice.css' %}">
     
 </head>
 <body>
@@ -36,23 +36,28 @@
             <p>Bienvenido al centro de control administrativo. Desde aquí puedes gestionar usuarios, monitorear proyectos y controlar todo el sistema.</p>
         </div>
 
+        <div class="stats">
+            <h3>📊 Tu Rendimiento</h3>
+
         <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="stat-number">{{ stats.total_usuarios }}</span>
                 <span class="stat-label">Total Usuarios</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="stat-number">{{ stats.usuarios_activos }}</span>
                 <span class="stat-label">Usuarios Activos</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="stat-number">{{ stats.clientes }}</span>
                 <span class="stat-label">Clientes</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="stat-number">{{ stats.desarrolladores }}</span>
                 <span class="stat-label">Desarrolladores</span>
             </div>
+        </div>
+
         </div>
 
         <div class="dashboard-grid">

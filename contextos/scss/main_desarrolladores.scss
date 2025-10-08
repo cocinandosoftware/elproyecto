@@ -1,0 +1,8 @@
+@use "variables" with (
+$color-primary: #01432E,
+$color-secondary: #061483,
+  $color-text: #d03d3d
+);
+
+@use "base";
+@use "dashboard";

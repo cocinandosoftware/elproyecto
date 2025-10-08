@@ -1,20 +1,16 @@
 @use "variables" as *;
-@use "mixins" as *;
+
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);  
+  background-color: #f5f7fa;
   line-height: 1.6;
-  color: $color-text;
-  min-height: 100vh;
-  padding: 20px;
-  margin: 0;
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
   font-weight: 300;
 }
