@@ -14,7 +14,11 @@
     "clientes-sass:build": "sass contextos/scss/main_clientes.scss contextos/static/css/main_clientes.css --style=compressed --no-source-map",
 
     "desarrolladores-sass:watch": "sass contextos/scss/main_desarrolladores.scss contextos/static/css/main_desarrolladores.css --style=compressed --no-source-map --watch",
-    "desarrolladores-sass:build": "sass contextos/scss/main_desarrolladores.scss contextos/static/css/main_desarrolladores.css --style=compressed --no-source-map"
+    "desarrolladores-sass:build": "sass contextos/scss/main_desarrolladores.scss contextos/static/css/main_desarrolladores.css --style=compressed --no-source-map",
+
+    "backoffice-sass:watch": "sass contextos/scss/main_backoffice.scss contextos/static/css/main_backoffice.css --style=compressed --no-source-map --watch",
+    "backoffice-sass:build": "sass contextos/scss/main_backoffice.scss contextos/static/css/main_backoffice.css --style=compressed --no-source-map"
+
 
   },
   "repository": {

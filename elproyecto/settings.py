@@ -118,8 +118,14 @@ USE_TZ = True
 # Indicar dónde están los estáticos de cada app
 STATIC_URL = '/static/'
 
-# Carpeta para recopilar todos los estáticos al hacer collectstatic
-STATIC_ROOT = BASE_DIR / 'static'
+# Directorios adicionales donde Django buscará archivos estáticos
+STATICFILES_DIRS = [
+    BASE_DIR / 'web' / 'static',
+    BASE_DIR / 'contextos' / 'static',
+]
+
+# Carpeta para recopilar todos los estáticos al hacer collectstatic para producción
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Default primary key field type
