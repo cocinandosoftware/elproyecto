@@ -14,6 +14,22 @@
 <body>
     <header class="header">
         <h1>Dashboard de {{contexto_nombre}}</h1>
+        
+        <!-- Menú de navegación -->
+        
+        <nav class="header-nav">
+        {% block nav %}
+
+            <a href="#" class="nav-link active">
+                🏠 item general
+            </a>
+    
+        {% endblock %}
+        </nav>
+
+
+        
+        
         <div class="user-info">
             <span>{{ usuario.nombre_completo }}</span>
             <a href="{% url 'auth:logout' %}" class="logout-btn">Cerrar Sesión</a>

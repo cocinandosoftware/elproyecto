@@ -4,6 +4,16 @@
 
 {% load static %}
 
+{% block nav %}
+
+    {{ block.super }}
+
+    <a href="#" class="nav-link active">
+        🏠 item de clientes
+    </a>
+
+{% endblock %}
+
 {% block content %}
 
     <div class="container">

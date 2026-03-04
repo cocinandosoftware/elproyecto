@@ -1,5 +1,86 @@
+{% extends 'gestion/base.html' %}
 
+{% load static %}
 
-<h1>
-Listado de Administradores
-</h1>
+{% block content %}
+
+<div class="listado-container">
+    <!-- Sección de buscador -->
+    <div class="search-section">
+        <h2>👥 Gestión de Usuarios</h2>
+        <div class="search-bar">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="Buscar por nombre, email o tipo de usuario..."
+            >
+            <button class="search-btn">
+                🔍 Buscar
+            </button>
+        </div>
+    </div>
+
+    <!-- Sección de tabla de usuarios -->
+    <div class="table-section">
+        <div class="table-header">
+            <h3>Lista de Usuarios</h3>
+            <button class="btn-add">
+                ➕ Agregar Usuario
+            </button>
+        </div>
+
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Tipo</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Último Acceso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.nombre_completo }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>
+                        <span class="badge badge-{{ usuario.tipo_usuario }}">
+                            {{ usuario.get_tipo_usuario_display }}
+                        </span>
+                    </td>
+                    <td>{{ usuario.telefono|default:"—" }}</td>
+                    <td>
+                        {% if usuario.activo %}
+                        <span class="status status-active">✓ Activo</span>
+                        {% else %}
+                        <span class="status status-inactive">✗ Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ usuario.fecha_ultimo_acceso|date:"d/m/Y H:i"|default:"Nunca" }}</td>
+                    <td class="actions">
+                        <button class="action-btn btn-view" title="Ver">👁️</button>
+                        <button class="action-btn btn-edit" title="Editar">✏️</button>
+                        <button class="action-btn btn-delete" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        No hay usuarios registrados en el sistema
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

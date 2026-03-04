@@ -32,6 +32,16 @@ def dashboard(request):
 @admin_required
 def listado(request):
     """
-    Vista del listado de backoffice - solo para administradores
+    Vista del listado de usuarios en backoffice - solo para administradores
     """
-    return render(request, 'gestion/backoffice/listado.html')
+    # Obtener todos los usuarios ordenados por fecha de registro (más recientes primero)
+    usuarios = Usuario.objects.all().order_by('-date_joined')
+    
+    datos = {
+        'contexto_nombre': 'Backoffice',
+        'contexto_css': 'main_backoffice',
+        'usuario': request.user,
+        'usuarios': usuarios,
+    }
+    
+    return render(request, 'gestion/backoffice/listado.html', datos)
