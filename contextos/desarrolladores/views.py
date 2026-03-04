@@ -7,10 +7,12 @@ def dashboard(request):
     Dashboard específico para desarrolladores
     """
     context = {
+        'contexto_nombre': 'Desarrolladores',
+        'contexto_css': 'main_desarrolladores',
         'usuario': request.user,
     }
 
-    return render(request, 'desarrolladores/dashboard.html', context)
+    return render(request, 'gestion/desarrolladores/dashboard.html', context)
 
 
 @desarrollador_required
@@ -18,4 +20,4 @@ def listado(request):
     """
     Vista del listado de desarrolladores - solo para usuarios autenticados
     """
-    return render(request, 'desarrolladores/listado.html')
+    return render(request, 'gestion/desarrolladores/listado.html')

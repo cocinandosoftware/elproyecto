@@ -15,6 +15,8 @@ def dashboard(request):
     desarrolladores_usuarios = Usuario.objects.filter(tipo_usuario='desarrollador').count()
     
     context = {
+        'contexto_nombre': 'Backoffice',
+        'contexto_css': 'main_backoffice',
         'usuario': request.user,
         'stats': {
             'total_usuarios': total_usuarios,
@@ -24,7 +26,7 @@ def dashboard(request):
         }
     }
     
-    return render(request, 'backoffice/dashboard.html', context)
+    return render(request, 'gestion/backoffice/dashboard.html', context)
 
 
 @admin_required
@@ -32,4 +34,4 @@ def listado(request):
     """
     Vista del listado de backoffice - solo para administradores
     """
-    return render(request, 'backoffice/listado.html')
+    return render(request, 'gestion/backoffice/listado.html')

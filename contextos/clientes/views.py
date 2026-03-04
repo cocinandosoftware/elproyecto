@@ -13,12 +13,14 @@ def dashboard(request):
     Dashboard específico para clientes
     """
 
-    context = {
+    data = {
+        'contexto_nombre': 'Clientes',
+        'contexto_css': 'main_clientes',
         'usuario': request.user,
         'cliente': request.user.cliente_asociado,
     }
     
-    return render(request, 'clientes/dashboard.html', context)
+    return render(request, 'gestion/clientes/dashboard.html', data)
 
 
 
@@ -51,4 +53,4 @@ def listado(request):
         'facturacion_promedio': facturacion_promedio,
     }
 
-    return render(request, 'clientes/listado.html', {'clientes': clientes, 'estadisticas': estadisticas})
+    return render(request, 'gestion/clientes/listado.html', {'clientes': clientes, 'estadisticas': estadisticas})

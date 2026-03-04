@@ -1,18 +1,19 @@
 {% load static %}
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Trabajo - Gestión de Proyectos</title>
-
-    <link rel="stylesheet" href="{% static 'css/main_desarrolladores.css' %}">
+    <title>Dashboard Trabajo - Plataforma Gestión de Proyectos</title>
+    
+    <link rel="stylesheet" href="{% get_static_prefix %}css/{{ contexto_css }}.css">
 
 </head>
 <body>
     <header class="header">
-        <h1>💻 Dashboard Desarrollador</h1>
+        <h1>Dashboard de {{contexto_nombre}}</h1>
         <div class="user-info">
             <span>{{ usuario.nombre_completo }}</span>
             <a href="{% url 'auth:logout' %}" class="logout-btn">Cerrar Sesión</a>
@@ -33,6 +34,7 @@
     <div class="container">
 
         {% block content %}
+
         {% endblock %}
 
     </div>

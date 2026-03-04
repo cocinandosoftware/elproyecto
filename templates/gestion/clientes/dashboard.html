@@ -1,34 +1,10 @@
+
+
+{% extends 'gestion/base.html' %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Cliente - Gestión de Proyectos</title>
-
-    <link rel="stylesheet" href="{% static 'css/main_clientes.css' %}">
-
-</head>
-<body>
-    <header class="header">
-        <h1>🏢 Dashboard Cliente</h1>
-        <div class="user-info">
-            <span>{{ usuario.nombre_completo }}</span>
-            <a href="{% url 'auth:logout' %}" class="logout-btn">Cerrar Sesión</a>
-        </div>
-    </header>
-
-    <!-- Mostrar mensajes -->
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+{% block content %}
 
     <div class="container">
         <div class="welcome-section">
@@ -98,5 +74,6 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+
+
+{% endblock %}
