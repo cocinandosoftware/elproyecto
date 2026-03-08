@@ -1,0 +1,146 @@
+{% extends 'gestion/base.html' %}
+
+{% load static %}
+
+{% block nav %}
+    {% include "gestion/backoffice/header.html" %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="listado-container">
+    <!-- Sección de buscador -->
+    <div class="search-section">
+        <h2>👥 Gestión de Usuarios</h2>
+        
+        <form method="GET" action="{% url 'backoffice:listado_usuarios' %}" class="search-form">
+            
+            <div class="search-filters">
+                <!-- Búsqueda general -->
+                <div class="filter-group filter-search">
+                    <label for="busqueda">Búsqueda General</label>
+                    <input 
+                        type="text" 
+                        id="busqueda" 
+                        name="filter_busqueda"
+                        class="search-input" 
+                        placeholder="Buscar por nombre, email o teléfono..."
+                        value="{{ request.GET.filter_busqueda }}"
+                    >
+                </div>
+
+                <!-- Tipo de usuario -->
+                <div class="filter-group">
+                    <label for="tipo_usuario">Tipo de Usuario</label>
+                    <select id="tipo_usuario" name="filter_tipo_usuario" class="filter-select">
+                        <option value="">Todos los tipos</option>
+                        <option value="admin" {% if request.GET.filter_tipo_usuario == 'admin' %}selected{% endif %}>Administrador</option>
+                        <option value="cliente" {% if request.GET.filter_tipo_usuario == 'cliente' %}selected{% endif %}>Cliente</option>
+                        <option value="desarrollador" {% if request.GET.filter_tipo_usuario == 'desarrollador' %}selected{% endif %}>Desarrollador</option>
+                    </select>
+                </div>
+
+                <!-- Fecha desde -->
+                <div class="filter-group">
+                    <label for="fecha_desde">Último Acceso Desde</label>
+                    <input 
+                        type="date" 
+                        id="fecha_desde" 
+                        name="filter_fecha_desde"
+                        class="filter-input" 
+                        value="{{ request.GET.filter_fecha_desde }}"
+                    >
+                </div>
+
+                <!-- Fecha hasta -->
+                <div class="filter-group">
+                    <label for="fecha_hasta">Último Acceso Hasta</label>
+                    <input 
+                        type="date" 
+                        id="fecha_hasta" 
+                        name="filter_fecha_hasta"
+                        class="filter-input" 
+                        value="{{ request.GET.filter_fecha_hasta }}"
+                    >
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="filter-group filter-actions">
+                    <label>&nbsp;</label>
+                    <div class="actions-buttons">
+                        <button type="submit" class="search-btn">
+                            🔍 Buscar
+                        </button>
+                        <a href="{% url 'backoffice:listado_usuarios' %}" class="clear-btn">
+                            ✖️ Limpiar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sección de tabla de usuarios -->
+    <div class="table-section">
+        <div class="table-header">
+            <h3>Lista de Usuarios</h3>
+            <button class="btn-add">
+                ➕ Agregar Usuario
+            </button>
+        </div>
+
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Tipo</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Último Acceso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.nombre_completo }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>
+                        <span class="badge badge-{{ usuario.tipo_usuario }}">
+                            {{ usuario.get_tipo_usuario_display }}
+                        </span>
+                    </td>
+                    <td>{{ usuario.telefono|default:"—" }}</td>
+                    <td>
+                        {% if usuario.activo %}
+                        <span class="status status-active">✓ Activo</span>
+                        {% else %}
+                        <span class="status status-inactive">✗ Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ usuario.fecha_ultimo_acceso|date:"d/m/Y H:i"|default:"Nunca" }}</td>
+                    <td class="actions">
+                        <button class="action-btn btn-view" title="Ver">👁️</button>
+                        <button class="action-btn btn-edit" title="Editar">✏️</button>
+                        <button class="action-btn btn-delete" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        No hay usuarios registrados en el sistema
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

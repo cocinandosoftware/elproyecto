@@ -7,16 +7,7 @@
 
 
 {% block nav %}
-
-    {{ block.super }}
-    
-    <a href="{% url 'backoffice:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-        🏠 Dashboard
-    </a>
-    <a href="{% url 'backoffice:listado_backoffice' %}" class="nav-link {% if request.resolver_match.url_name == 'listado_backoffice' %}active{% endif %}">
-        👥 Usuarios
-    </a>
-    
+    {% include "gestion/backoffice/header.html" %}
 {% endblock %}
 
 
