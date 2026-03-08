@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+from django.contrib import messages
 from datetime import datetime, time
 from core.usuarios.UsuarioModel import Usuario
 from contextos.decorators import admin_required
@@ -93,3 +94,32 @@ def listado(request):
     }
     
     return render(request, 'gestion/backoffice/usuarios.html', datos)
+
+
+@admin_required
+def eliminar_usuario(request, usuario_id):
+    """
+    Vista para eliminar un usuario del sistema.
+    Solo accesible para administradores.
+    Requiere confirmación mediante POST.
+    """
+    # Obtener el usuario a eliminar o devolver 404
+    usuario_a_eliminar = get_object_or_404(Usuario, id=usuario_id)
+    
+    # Verificar que no se esté intentando eliminar a sí mismo
+    if usuario_a_eliminar.id == request.user.id:
+        messages.error(request, '❌ No puedes eliminar tu propio usuario.')
+        return redirect('backoffice:listado_usuarios')
+    
+    # Solo procesar si es una petición POST (confirmación)
+    if request.method == 'POST':
+        nombre_usuario = usuario_a_eliminar.nombre_completo
+        try:
+            usuario_a_eliminar.delete()
+            messages.success(request, f'✓ Usuario "{nombre_usuario}" eliminado correctamente.')
+        except Exception as e:
+            messages.error(request, f'❌ Error al eliminar el usuario: {str(e)}')
+    else:
+        messages.error(request, '❌ Método no permitido. Use el formulario de confirmación.')
+    
+    return redirect('backoffice:listado_usuarios')

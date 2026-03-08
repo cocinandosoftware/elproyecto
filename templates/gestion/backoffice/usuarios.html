@@ -128,7 +128,11 @@
                     <td class="actions">
                         <button class="action-btn btn-view" title="Ver">👁️</button>
                         <button class="action-btn btn-edit" title="Editar">✏️</button>
-                        <button class="action-btn btn-delete" title="Eliminar">🗑️</button>
+                        <button class="action-btn btn-delete" 
+                                title="Eliminar"
+                                onclick="mostrarModalEliminar({{ usuario.id }}, '{{ usuario.nombre_completo|escapejs }}')">
+                            🗑️
+                        </button>
                     </td>
                 </tr>
                 {% empty %}
@@ -142,5 +146,186 @@
         </table>
     </div>
 </div>
+
+<!-- Modal de confirmación para eliminar usuario -->
+<div id="modalEliminar" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>⚠️ Confirmar Eliminación</h3>
+            <button class="modal-close" onclick="cerrarModalEliminar()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Estás seguro de que deseas eliminar al usuario <strong id="nombreUsuario"></strong>?</p>
+            <p class="warning-text">⚠️ Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
+            <form id="formEliminar" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Eliminar Usuario</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para mostrar el modal de eliminación
+    function mostrarModalEliminar(usuarioId, nombreUsuario) {
+        const modal = document.getElementById('modalEliminar');
+        const nombreElement = document.getElementById('nombreUsuario');
+        const form = document.getElementById('formEliminar');
+        
+        // Establecer el nombre del usuario en el modal
+        nombreElement.textContent = nombreUsuario;
+        
+        // Establecer la acción del formulario
+        form.action = "{% url 'backoffice:eliminar_usuario' 0 %}".replace('0', usuarioId);
+        
+        // Mostrar el modal
+        modal.style.display = 'flex';
+    }
+    
+    // Función para cerrar el modal
+    function cerrarModalEliminar() {
+        const modal = document.getElementById('modalEliminar');
+        modal.style.display = 'none';
+    }
+    
+    // Cerrar modal al hacer clic fuera de él
+    window.onclick = function(event) {
+        const modal = document.getElementById('modalEliminar');
+        if (event.target === modal) {
+            cerrarModalEliminar();
+        }
+    }
+    
+    // Cerrar modal con la tecla Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            cerrarModalEliminar();
+        }
+    });
+</script>
+
+<style>
+    /* Estilos del modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 500px;
+        animation: modalFadeIn 0.3s ease;
+    }
+    
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        color: #dc3545;
+        font-size: 1.3rem;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #999;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        transition: color 0.3s ease;
+    }
+    
+    .modal-close:hover {
+        color: #333;
+    }
+    
+    .modal-body {
+        padding: 2rem 1.5rem;
+    }
+    
+    .modal-body p {
+        margin: 0 0 1rem 0;
+        font-size: 1rem;
+        color: #333;
+    }
+    
+    .warning-text {
+        color: #dc3545;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-cancel:hover {
+        background-color: #5a6268;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+</style>
 
 {% endblock %}

@@ -5,13 +5,7 @@
 {% load static %}
 
 {% block nav %}
-
-    {{ block.super }}
-
-    <a href="#" class="nav-link active">
-        🏠 dashboard de clientes
-    </a>
-
+    {% include "gestion/clientes/header.html" %}
 {% endblock %}
 
 {% block content %}

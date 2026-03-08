@@ -1,0 +1,11 @@
+
+    <a href="{% url 'desarrolladores:dashboard' %}" 
+        class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Dashboard</span>
+    </a>
+    <a href="{% url 'desarrolladores:listado' %}" 
+        class="nav-link {% if request.resolver_match.url_name == 'listado' %}active{% endif %}">
+        <span class="nav-icon">💻</span>
+        <span class="nav-text">Mis Proyectos</span>
+    </a>

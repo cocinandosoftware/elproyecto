@@ -12,47 +12,80 @@
 
 </head>
 <body>
-    <header class="header">
-        <h1>Dashboard de {{contexto_nombre}}</h1>
+    <!-- Sidebar navegación -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">{{contexto_nombre}}</h2>
+        </div>
         
-        <!-- Menú de navegación -->
-        
-        <nav class="header-nav">
+        <nav class="sidebar-nav">
         {% block nav %}
-
             <a href="#" class="nav-link active">
-                🏠 item base
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Item base</span>
             </a>
-    
         {% endblock %}
         </nav>
-
-
         
-        
-        <div class="user-info">
-            <span>{{ usuario.nombre_completo }}</span>
-            <a href="{% url 'auth:logout' %}" class="logout-btn">Cerrar Sesión</a>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">{{ usuario.nombre_completo }}</span>
+            </div>
+            <a href="{% url 'auth:logout' %}" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-text">Cerrar Sesión</span>
+            </a>
         </div>
-    </header>
+    </aside>
 
-    <!-- Mostrar mensajes -->
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Header superior con toggle -->
+        <header class="header">
+            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                <span class="toggle-icon">☰</span>
+            </button>
+            <h1>Dashboard de {{contexto_nombre}}</h1>
+            <div class="header-spacer"></div>
+        </header>
+
+        <!-- Mostrar mensajes -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="container">
+            {% block content %}
+            {% endblock %}
         </div>
-    {% endif %}
-
-    <div class="container">
-
-        {% block content %}
-
-        {% endblock %}
-
     </div>
+
+    <!-- Script para toggle del sidebar -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Guardar preferencia en localStorage
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+
+        // Restaurar estado del sidebar al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+            }
+        });
+    </script>
 </body>
 </html>

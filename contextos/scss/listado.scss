@@ -1,17 +1,13 @@
 @use "sass:color";
 @use "variables" as *;
 
-/* Override del container para listados - permite usar 100% del ancho */
-.container:has(.listado-container) {
-    max-width: 100%;
-    padding: 0;
-}
-
 /* Estilos para sistema de listado */
+/* IMPORTANTE: Los listados deben usar el 100% del ancho disponible */
 .listado-container {
     width: 100%;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0;
 }
 
 .search-section {

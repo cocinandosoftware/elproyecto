@@ -105,6 +105,42 @@ El proyecto usa **SCSS** para los estilos. Cada contexto tiene sus propios archi
 - **Desarrolladores**: Verde (`#28a745`, `#20c997`)
 - **Administradores**: Rojo (`#dc3545`, `#e74c3c`)
 
+### Anchos y Contenedores
+
+**IMPORTANTE**: Los módulos de listado (tablas, grids de datos, búsquedas) **SIEMPRE deben usar el 100% del ancho disponible** para aprovechar el espacio horizontal.
+
+**Reglas de ancho**:
+- **Listados y tablas**: 100% del ancho (sin max-width)
+- **Dashboards y formularios**: max-width de 1400px para mejor legibilidad
+- **Contenedor `.listado-container`**: Siempre width: 100%
+
+**Implementación en SCSS**:
+```scss
+.container {
+    width: 100%;
+    
+    // Para contenido normal (dashboards, formularios)
+    &:not(:has(.listado-container)) {
+        max-width: 1400px;
+    }
+    
+    // Para listados, usar 100% del ancho disponible
+    &:has(.listado-container) {
+        max-width: 100%;
+        padding: 1rem;
+    }
+}
+```
+
+**En templates de listado**:
+```django
+<div class="container">
+    <div class="listado-container">
+        <!-- Contenido del listado -->
+    </div>
+</div>
+```
+
 ### Archivos Estáticos
 
 **Configuración en templates**:
