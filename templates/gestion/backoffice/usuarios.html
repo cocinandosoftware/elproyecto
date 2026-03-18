@@ -10,6 +10,41 @@
 {% block content %}
 
 <div class="listado-container">
+    <!-- Sección de KPIs -->
+    <div class="kpis-section">
+        <div class="kpi-card kpi-total">
+            <div class="kpi-icon">👥</div>
+            <div class="kpi-content">
+                <div class="kpi-label">Total Usuarios</div>
+                <div class="kpi-value" id="kpi-total"></div>
+            </div>
+        </div>
+        
+        <div class="kpi-card kpi-admin">
+            <div class="kpi-icon">🔐</div>
+            <div class="kpi-content">
+                <div class="kpi-label">Administradores</div>
+                <div class="kpi-value" id="kpi-admins"></div>
+            </div>
+        </div>
+        
+        <div class="kpi-card kpi-cliente">
+            <div class="kpi-icon">💼</div>
+            <div class="kpi-content">
+                <div class="kpi-label">Clientes</div>
+                <div class="kpi-value" id="kpi-clientes"></div>
+            </div>
+        </div>
+        
+        <div class="kpi-card kpi-desarrollador">
+            <div class="kpi-icon">💻</div>
+            <div class="kpi-content">
+                <div class="kpi-label">Desarrolladores</div>
+                <div class="kpi-value" id="kpi-desarrolladores"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sección de buscador -->
     <div class="search-section">
         <h2>👥 Gestión de Usuarios</h2>
@@ -140,10 +175,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
-            <form id="formEliminar" method="POST" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Eliminar Usuario</button>
-            </form>
+            <button class="btn btn-danger" id="btnConfirmarEliminar" onclick="confirmarEliminacion()">Eliminar Usuario</button>
         </div>
     </div>
 </div>
@@ -151,20 +183,22 @@
 <script>
 
     // ============================================
-    // Sistema MOdal Eliminacion de Usuarios
+    // Sistema Modal Eliminación de Usuarios (Asíncrono)
     // ============================================
+    
+    // Variable para almacenar el ID del usuario a eliminar
+    let usuarioIdAEliminar = null;
 
     // Función para mostrar el modal de eliminación
     function mostrarModalEliminar(usuarioId, nombreUsuario) {
         const modal = document.getElementById('modalEliminar');
         const nombreElement = document.getElementById('nombreUsuario');
-        const form = document.getElementById('formEliminar');
+        
+        // Guardar el ID del usuario a eliminar
+        usuarioIdAEliminar = usuarioId;
         
         // Establecer el nombre del usuario en el modal
         nombreElement.textContent = nombreUsuario;
-        
-        // Establecer la acción del formulario
-        form.action = "{% url 'backoffice:eliminar_usuario' 0 %}".replace('0', usuarioId);
         
         // Mostrar el modal
         modal.style.display = 'flex';
@@ -174,6 +208,103 @@
     function cerrarModalEliminar() {
         const modal = document.getElementById('modalEliminar');
         modal.style.display = 'none';
+        usuarioIdAEliminar = null;
+    }
+    
+    // Función para confirmar y ejecutar la eliminación de forma asíncrona
+    async function confirmarEliminacion() {
+        if (!usuarioIdAEliminar) {
+            alert('Error: No hay usuario seleccionado');
+            return;
+        }
+        
+        const btnConfirmar = document.getElementById('btnConfirmarEliminar');
+        const btnCancelar = document.querySelector('.btn-cancel');
+        
+        // Deshabilitar botones durante la petición
+        btnConfirmar.disabled = true;
+        btnCancelar.disabled = true;
+        btnConfirmar.innerHTML = '<span class="spinner" style="width: 16px; height: 16px; border-width: 2px; margin-right: 8px;"></span> Eliminando...';
+        
+        try {
+            // Construir URL de eliminación
+            const url = "{% url 'backoffice:eliminar_usuario' 0 %}".replace('0', usuarioIdAEliminar);
+            
+            // Realizar petición fetch para eliminar
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCsrfToken()
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Cerrar modal primero
+                cerrarModalEliminar();
+                
+                // Mostrar mensaje de éxito
+                mostrarMensaje('success', data.message || 'Usuario eliminado correctamente');
+                
+                // Recargar la tabla de usuarios con los filtros actuales
+                // (buscarUsuariosAsincrono ya muestra su propio loader)
+                buscarUsuariosAsincrono();
+            } else {
+                // Mostrar mensaje de error
+                mostrarMensaje('error', data.message || 'Error al eliminar el usuario');
+                cerrarModalEliminar();
+            }
+        } catch (error) {
+            console.error('Error al eliminar usuario:', error);
+            mostrarMensaje('error', 'Error al comunicarse con el servidor');
+            cerrarModalEliminar();
+        } finally {
+            // Restaurar botones
+            btnConfirmar.disabled = false;
+            btnCancelar.disabled = false;
+            btnConfirmar.textContent = 'Eliminar Usuario';
+        }
+    }
+    
+    // Función para obtener el token CSRF
+    function getCsrfToken() {
+        const name = 'csrftoken';
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Función para mostrar mensajes de sistema (tipo Django messages)
+    function mostrarMensaje(tipo, mensaje) {
+        // Crear elemento de mensaje
+        const mensajeDiv = document.createElement('div');
+        mensajeDiv.className = `mensaje-sistema mensaje-${tipo}`;
+        mensajeDiv.textContent = mensaje;
+        
+        // Añadir al DOM (en la parte superior del contenedor)
+        const container = document.querySelector('.listado-container');
+        container.insertBefore(mensajeDiv, container.firstChild);
+        
+        // Mostrar con animación
+        setTimeout(() => mensajeDiv.classList.add('show'), 10);
+        
+        // Auto-ocultar después de 4 segundos
+        setTimeout(() => {
+            mensajeDiv.classList.remove('show');
+            setTimeout(() => mensajeDiv.remove(), 300);
+        }, 4000);
     }
     
     // Cerrar modal al hacer clic fuera de él
@@ -252,6 +383,10 @@
             console.log("Respuesta del servidor:", data); // Debug: mostrar datos recibidos
             if (data.success) {
                 actualizarTablaUsuarios(data.usuarios);
+                // Actualizar KPIs si están disponibles
+                if (data.kpis) {
+                    actualizarKpis(data.kpis);
+                }
             } else {
                 // Mostrar mensaje de error específico del servidor
                 mostrarError(data.message || 'Error al cargar los usuarios');
@@ -355,6 +490,34 @@
         `;
     }
     
+    /**
+     * Actualiza los valores de los KPIs
+     */
+    function actualizarKpis(kpis) {
+        // Actualizar cada KPI con animación
+        const kpiElements = {
+            total: document.getElementById('kpi-total'),
+            admins: document.getElementById('kpi-admins'),
+            clientes: document.getElementById('kpi-clientes'),
+            desarrolladores: document.getElementById('kpi-desarrolladores')
+        };
+        
+        // Actualizar valores con efecto de actualización
+        Object.keys(kpiElements).forEach(key => {
+            const element = kpiElements[key];
+            if (element && kpis[key] !== undefined) {
+                // Añadir clase de actualización
+                element.classList.add('updating');
+                
+                // Actualizar el valor después de un breve delay para el efecto visual
+                setTimeout(() => {
+                    element.textContent = kpis[key];
+                    element.classList.remove('updating');
+                }, 150);
+            }
+        });
+    }
+    
     
     // ============================================
     // Event Listeners
@@ -436,19 +599,19 @@
         100% { transform: rotate(360deg); }
     }
     
-    /* Loader de búsqueda con posición absoluta */
+    /* Loader de búsqueda con posición fija (centrado en pantalla) */
     .search-loader {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.9);
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.92);
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1000;
-        backdrop-filter: blur(2px);
+        z-index: 9998;
+        backdrop-filter: blur(3px);
     }
     
     .loader-content {
@@ -555,6 +718,58 @@
         background-color: #c82333;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .btn-danger .spinner {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    /* Mensajes de sistema dinámicos */
+    .mensaje-sistema {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+    }
+    
+    .mensaje-sistema.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .mensaje-sistema.mensaje-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+    
+    .mensaje-sistema.mensaje-success::before {
+        content: '✓';
+        font-size: 1.2rem;
+    }
+    
+    .mensaje-sistema.mensaje-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+    
+    .mensaje-sistema.mensaje-error::before {
+        content: '✗';
+        font-size: 1.2rem;
     }
 </style>
 

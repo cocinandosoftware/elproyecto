@@ -37,7 +37,6 @@ def dashboard(request):
 def listado(request):
     """
     Vista del listado de usuarios en backoffice - solo para administradores.
-    No realiza consultas a la base de datos.
     La carga inicial y el filtrado se manejan completamente mediante JavaScript asíncrono.
     """
     datos = {
@@ -52,30 +51,61 @@ def listado(request):
 @admin_required
 def eliminar_usuario(request, usuario_id):
     """
-    Vista para eliminar un usuario del sistema.
+    API para eliminar un usuario del sistema de forma asíncrona.
     Solo accesible para administradores.
-    Requiere confirmación mediante POST.
+    Devuelve JSON con el resultado de la operación.
     """
-    # Obtener el usuario a eliminar o devolver 404
-    usuario_a_eliminar = get_object_or_404(Usuario, id=usuario_id)
-    
-    # Verificar que no se esté intentando eliminar a sí mismo
-    if usuario_a_eliminar.id == request.user.id:
-        messages.error(request, '❌ No puedes eliminar tu propio usuario.')
-        return redirect('backoffice:listado_usuarios')
-    
-    # Solo procesar si es una petición POST (confirmación)
-    if request.method == 'POST':
+    try:
+        # Solo procesar si es una petición POST o DELETE
+        if request.method not in ['POST', 'DELETE']:
+            return JsonResponse({
+                'success': False,
+                'error': 'Método no permitido',
+                'message': 'Use POST o DELETE para eliminar usuarios'
+            }, status=405)
+        
+        # Obtener el usuario a eliminar o devolver 404
+        usuario_a_eliminar = get_object_or_404(Usuario, id=usuario_id)
+        
+        # Verificar que no se esté intentando eliminar a sí mismo
+        if usuario_a_eliminar.id == request.user.id:
+            return JsonResponse({
+                'success': False,
+                'error': 'Auto-eliminación no permitida',
+                'message': 'No puedes eliminar tu propio usuario'
+            }, status=403)
+        
+        # Guardar datos antes de eliminar
         nombre_usuario = usuario_a_eliminar.nombre_completo
-        try:
-            usuario_a_eliminar.delete()
-            messages.success(request, f'✓ Usuario "{nombre_usuario}" eliminado correctamente.')
-        except Exception as e:
-            messages.error(request, f'❌ Error al eliminar el usuario: {str(e)}')
-    else:
-        messages.error(request, '❌ Método no permitido. Use el formulario de confirmación.')
+        tipo_usuario = usuario_a_eliminar.tipo_usuario
+        
+        # Eliminar el usuario
+        usuario_a_eliminar.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Usuario "{nombre_usuario}" eliminado correctamente',
+            'usuario_eliminado': {
+                'id': usuario_id,
+                'nombre': nombre_usuario,
+                'tipo': tipo_usuario
+            }
+        })
     
-    return redirect('backoffice:listado_usuarios')
+    except Usuario.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Usuario no encontrado',
+            'message': 'El usuario que intenta eliminar no existe'
+        }, status=404)
+    
+    except Exception as e:
+        print(f"Error al eliminar usuario {usuario_id}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Error interno del servidor',
+            'message': f'Error al eliminar el usuario: {str(e)}'
+        }, status=500)
 
 
 @admin_required
@@ -140,6 +170,15 @@ def buscar_usuarios_api(request):
         
         # Ordenar resultados
         usuarios = usuarios.order_by('-date_joined')
+        
+        # Calcular KPIs basados en los resultados filtrados
+        total_filtrado = usuarios.count()
+        kpis = {
+            'total': total_filtrado,
+            'admins': usuarios.filter(tipo_usuario='admin').count(),
+            'clientes': usuarios.filter(tipo_usuario='cliente').count(),
+            'desarrolladores': usuarios.filter(tipo_usuario='desarrollador').count(),
+        }
 
         # Preparar datos para JSON
         usuarios_data = []
@@ -164,7 +203,8 @@ def buscar_usuarios_api(request):
         return JsonResponse({
             'success': True,
             'usuarios': usuarios_data,
-            'total': len(usuarios_data)
+            'total': len(usuarios_data),
+            'kpis': kpis
         })
     
     except Usuario.DoesNotExist:

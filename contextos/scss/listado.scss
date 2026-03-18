@@ -10,6 +10,151 @@
     padding: 0;
 }
 
+/* Sección de KPIs */
+.kpis-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .kpi-icon {
+        font-size: 2.5rem;
+        opacity: 0.9;
+    }
+
+    .kpi-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .kpi-label {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        line-height: 1;
+        transition: all 0.3s ease;
+
+        &.updating {
+            animation: kpiPulse 0.4s ease;
+        }
+    }
+
+    // Variantes por tipo
+    &.kpi-total {
+        border-left-color: #687ac9;
+
+        &:hover {
+            background: linear-gradient(135deg, rgba(104, 122, 201, 0.05) 0%, white 100%);
+        }
+
+        .kpi-value {
+            color: #687ac9;
+        }
+    }
+
+    &.kpi-admin {
+        border-left-color: #d03d3d;
+
+        &:hover {
+            background: linear-gradient(135deg, rgba(208, 61, 61, 0.05) 0%, white 100%);
+        }
+
+        .kpi-value {
+            color: #d03d3d;
+        }
+    }
+
+    &.kpi-cliente {
+        border-left-color: #667eea;
+
+        &:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, white 100%);
+        }
+
+        .kpi-value {
+            color: #667eea;
+        }
+    }
+
+    &.kpi-desarrollador {
+        border-left-color: #28a745;
+
+        &:hover {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, white 100%);
+        }
+
+        .kpi-value {
+            color: #28a745;
+        }
+    }
+}
+
+@keyframes kpiPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive para KPIs */
+@media (max-width: 1024px) {
+    .kpis-section {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .kpis-section {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-card {
+        padding: 1.25rem;
+
+        .kpi-icon {
+            font-size: 2rem;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+        }
+    }
+}
+
 .search-section {
     background: white;
     padding: 1.5rem 2rem;
