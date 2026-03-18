@@ -88,10 +88,10 @@ def buscar_usuarios_api(request):
     try:
         # Simular carga para visualizar el loader (eliminar en producción)
         import time as t
-        t.sleep(2)
+        t.sleep(1)
         
         # Obtener todos los usuarios como base
-        usuarios = Usuario.objects.filter(email="hola.com")
+        usuarios = Usuario.objects.all()
         
         # Aplicar filtros desde request.GET
         busqueda = request.GET.get('filter_busqueda', '').strip()
@@ -165,7 +165,7 @@ def buscar_usuarios_api(request):
             'success': True,
             'usuarios': usuarios_data,
             'total': len(usuarios_data)
-        }, status=200)
+        })
     
     except Usuario.DoesNotExist:
         return JsonResponse({
