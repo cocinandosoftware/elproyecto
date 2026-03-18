@@ -1,0 +1,184 @@
+@use "sass:color";
+@use "variables" as *;
+
+/* ============================================
+   SISTEMA DE SPINNERS Y LOADERS
+   ============================================
+   Componentes de carga reutilizables para toda
+   la aplicación: spinners, loaders de pantalla completa
+*/
+
+/* Spinner básico rotatorio */
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #dc3545;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { 
+        transform: rotate(0deg); 
+    }
+    100% { 
+        transform: rotate(360deg); 
+    }
+}
+
+/* Variantes de spinner por contexto/color */
+.spinner-primary {
+    border-top-color: $color-primary;
+}
+
+.spinner-secondary {
+    border-top-color: $color-secondary;
+}
+
+.spinner-success {
+    border-top-color: #28a745;
+}
+
+.spinner-danger {
+    border-top-color: #dc3545;
+}
+
+.spinner-warning {
+    border-top-color: #ffc107;
+}
+
+.spinner-info {
+    border-top-color: #17a2b8;
+}
+
+/* Tamaños de spinner */
+.spinner-sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+.spinner-lg {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+}
+
+.spinner-xl {
+    width: 60px;
+    height: 60px;
+    border-width: 5px;
+}
+
+/* ============================================
+   LOADER DE PANTALLA COMPLETA (POSITION FIXED)
+   ============================================
+   Loader centrado que cubre toda la pantalla
+   independiente del scroll
+*/
+
+.loader-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+    backdrop-filter: blur(3px);
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+    p {
+        margin: 0;
+        color: #333;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 4px;
+    }
+}
+
+/* ============================================
+   LOADER LOCAL (POSITION ABSOLUTE)
+   ============================================
+   Loader contenido dentro de un elemento específico
+*/
+
+.loader-local {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+/* Alias para búsqueda (compatibilidad con código existente) */
+.search-loader {
+    @extend .loader-fullscreen;
+}
+
+/* ============================================
+   LOADER INLINE
+   ============================================
+   Loader pequeño para usar inline en botones, etc
+*/
+
+.loader-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border-width: 2px;
+    }
+}
+
+/* ============================================
+   ESTADOS DE CARGA EN ELEMENTOS
+   ============================================ */
+
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
