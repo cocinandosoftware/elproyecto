@@ -2,6 +2,74 @@
 
 {% load static %}
 
+{% block extra_css %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<style>
+    /* Estilos personalizados para DataTables */
+    .dataTables_wrapper {
+        padding: 1rem 0;
+    }
+    
+    .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_filter input {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+    }
+    
+    .dataTables_length select {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 0.25rem;
+        margin: 0 0.5rem;
+    }
+    
+    .dataTables_info {
+        padding-top: 1rem;
+    }
+    
+    .dataTables_paginate {
+        padding-top: 1rem;
+    }
+    
+    .dataTables_paginate .paginate_button {
+        padding: 0.25rem 0.5rem;
+        margin: 0 0.25rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .dataTables_paginate .paginate_button.current {
+        background: #dc3545;
+        color: white !important;
+        border-color: #dc3545;
+    }
+    
+    .dataTables_paginate .paginate_button:hover {
+        background: #f8f9fa;
+        border-color: #aaa;
+    }
+    
+    table.dataTable thead th {
+        cursor: pointer;
+        position: relative;
+    }
+    
+    table.dataTable thead .sorting:after,
+    table.dataTable thead .sorting_asc:after,
+    table.dataTable thead .sorting_desc:after {
+        opacity: 0.5;
+        font-size: 0.8em;
+    }
+</style>
+{% endblock %}
+
 {% block nav %}
     {% include "gestion/backoffice/header.html" %}
 {% endblock %}
@@ -188,6 +256,9 @@
     
     // Variable para almacenar el ID del usuario a eliminar
     let usuarioIdAEliminar = null;
+    
+    // Variable para almacenar la instancia de DataTable
+    let dataTableInstance = null;
 
     // Función para mostrar el modal de eliminación
     function mostrarModalEliminar(usuarioId, nombreUsuario) {
@@ -405,6 +476,12 @@
         // Ocultar loader
         ocultarCargando();
         
+        // Si existe una instancia de DataTable, destruirla antes de actualizar
+        if (dataTableInstance) {
+            dataTableInstance.destroy();
+            dataTableInstance = null;
+        }
+        
         // Limpiar tabla actual
         tableBody.innerHTML = '';
         
@@ -456,6 +533,42 @@
             
             tableBody.appendChild(fila);
         });
+        
+        // Inicializar DataTables después de cargar los datos
+        inicializarDataTable();
+    }
+    
+    /**
+     * Inicializa DataTables en la tabla de usuarios
+     */
+    function inicializarDataTable() {
+        // Verificar que jQuery y DataTables estén disponibles
+        if (typeof jQuery === 'undefined' || typeof jQuery.fn.DataTable === 'undefined') {
+            console.error('jQuery o DataTables no están disponibles');
+            return;
+        }
+        
+        try {
+            dataTableInstance = jQuery('.users-table').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                },
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                order: [[0, 'asc']], // Ordenar por ID por defecto
+                columnDefs: [
+                    {
+                        targets: -1, // Última columna (Acciones)
+                        orderable: false, // No permitir ordenar por acciones
+                        searchable: false
+                    }
+                ],
+                responsive: true,
+                dom: '<"top"lf>rt<"bottom"ip><"clear">'
+            });
+        } catch (error) {
+            console.error('Error al inicializar DataTables:', error);
+        }
     }
     
     /**
@@ -540,5 +653,11 @@
         buscarUsuariosAsincrono();
     });
 </script>
+
+<!-- jQuery (requerido para DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 {% endblock %}
