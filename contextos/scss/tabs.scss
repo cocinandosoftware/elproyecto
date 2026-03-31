@@ -1,0 +1,198 @@
+@use "variables" as *;
+
+/**
+ * Sistema de Tabs para páginas de edición
+ * Navegación entre secciones de contenido (Datos, Tareas, Proyectos, Historial)
+ */
+
+// ====================
+// NAVEGACIÓN DE TABS
+// ====================
+
+.tabs-navigation {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    background: transparent;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    
+    &:hover {
+        color: $color-primary;
+        background: rgba($color-primary, 0.05);
+    }
+    
+    &.active {
+        color: $color-primary;
+        border-bottom-color: $color-primary;
+        font-weight: 600;
+    }
+    
+    // Badge con contador
+    .tab-badge {
+        background: $color-primary;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        min-width: 24px;
+        text-align: center;
+    }
+}
+
+// ====================
+// CONTENIDO DE TABS
+// ====================
+
+.tabs-wrapper {
+    position: relative;
+    min-height: 400px;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+    
+    &.active {
+        display: block;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// ====================
+// BREADCRUMB
+// ====================
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #6b7280;
+}
+
+.breadcrumb-link {
+    color: $color-primary;
+    text-decoration: none;
+    transition: color 0.2s;
+    
+    &:hover {
+        color: darken($color-primary, 10%);
+        text-decoration: underline;
+    }
+}
+
+.breadcrumb-separator {
+    color: #d1d5db;
+}
+
+.breadcrumb-current {
+    color: #374151;
+    font-weight: 500;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+// ====================
+// PLACEHOLDERS DE TABS
+// ====================
+
+.tab-placeholder {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 2px dashed #e5e7eb;
+    
+    .placeholder-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .placeholder-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .placeholder-description {
+        font-size: 1rem;
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+    }
+    
+    .placeholder-features {
+        text-align: left;
+        max-width: 500px;
+        margin: 0 auto;
+        
+        li {
+            padding: 0.5rem 0;
+            color: #6b7280;
+            
+            &::before {
+                content: "✅ ";
+                margin-right: 0.5rem;
+            }
+        }
+    }
+}
+
+// ====================
+// RESPONSIVE
+// ====================
+
+@media (max-width: 768px) {
+    .tabs-navigation {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .tab-button {
+        white-space: nowrap;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+}

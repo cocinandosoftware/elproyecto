@@ -14,4 +14,4 @@ def listado(request):
         'usuario': request.user,
     }
     
-    return render(request, 'gestion/backoffice/usuarios.html', datos)
+    return render(request, 'gestion/backoffice/usuarios/listado.html', datos)

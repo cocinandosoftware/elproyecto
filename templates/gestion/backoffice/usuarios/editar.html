@@ -1,0 +1,66 @@
+{% extends 'gestion/base.html' %}
+
+{% load static %}
+
+{% block nav %}
+    {% include "gestion/backoffice/header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    {# Header con breadcrumb #}
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="{% url 'backoffice:usuarios:listado' %}" class="breadcrumb-link">👥 Usuarios</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Editar: {{ usuario.nombre_completo }}</span>
+        </div>
+        <h1 class="page-title">✏️ Editar Usuario</h1>
+    </div>
+    
+    {# Tabs de navegación #}
+    <div class="tabs-navigation">
+        <button class="tab-button active" data-tab="datos">
+            📝 Datos Generales
+        </button>
+        <button class="tab-button" data-tab="tareas">
+            📋 Tareas <span class="tab-badge">{{ total_tareas }}</span>
+        </button>
+        <button class="tab-button" data-tab="proyectos">
+            💼 Proyectos <span class="tab-badge">{{ total_proyectos }}</span>
+        </button>
+        <button class="tab-button" data-tab="historial">
+            📈 Historial
+        </button>
+    </div>
+    
+    {# Contenido de cada tab #}
+    <div class="tabs-wrapper">
+        
+        {# Tab: Datos generales #}
+        <div class="tab-content active" id="tab-datos">
+            {% include "gestion/backoffice/usuarios/_form_datos.html" %}
+        </div>
+        
+        {# Tab: Tareas #}
+        <div class="tab-content" id="tab-tareas">
+            {% include "gestion/backoffice/usuarios/_tab_tareas.html" %}
+        </div>
+        
+        {# Tab: Proyectos #}
+        <div class="tab-content" id="tab-proyectos">
+            {% include "gestion/backoffice/usuarios/_tab_proyectos.html" %}
+        </div>
+        
+        {# Tab: Historial #}
+        <div class="tab-content" id="tab-historial">
+            {% include "gestion/backoffice/usuarios/_tab_historial.html" %}
+        </div>
+        
+    </div>
+    
+</div>
+
+<script type="module" src="{% static 'js/modules/usuarios/editar-usuario-init.js' %}"></script>
+{% endblock %}

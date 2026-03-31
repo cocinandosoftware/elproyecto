@@ -103,9 +103,11 @@ export class UsuariosModule extends DataTable {
             <td>${usuario.telefono || '—'}</td>
             <td>${lastLogin}</td>
             <td class="actions">
-                <button class="btn btn-sm btn-primary btn-edit" data-user-id="${usuario.id}" title="Editar">
+                <a href="/backoffice/usuarios/${usuario.id}/editar/" 
+                   class="btn btn-sm btn-primary" 
+                   title="Editar">
                     ✏️
-                </button>
+                </a>
                 <button class="btn btn-sm btn-danger btn-delete" 
                         data-user-id="${usuario.id}" 
                         data-user-email="${email}"
@@ -194,15 +196,8 @@ export class UsuariosModule extends DataTable {
      * Sobrescribe attachRowEventListeners para botones de acción
      */
     attachRowEventListeners() {
-        // Botones de editar
-        const editButtons = document.querySelectorAll('.btn-edit');
-        editButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const userId = btn.dataset.userId;
-                this.handleEdit(userId);
-            });
-        });
-
+        // Los botones de editar ahora son enlaces, no necesitan event listeners
+        
         // Botones de eliminar
         const deleteButtons = document.querySelectorAll('.btn-delete');
         deleteButtons.forEach(btn => {
@@ -250,63 +245,6 @@ export class UsuariosModule extends DataTable {
             formConfig,
             async (formData) => await this.submitCreateForm(formData)
         );
-    }
-
-    /**
-     * Maneja la edición de un usuario existente
-     * Carga datos del usuario y abre el modal con formulario pre-rellenado
-     * @param {string} userId - ID del usuario
-     */
-    async handleEdit(userId) {
-        try {
-            // Obtener datos del usuario
-            const response = await this.apiClient.get(`/backoffice/usuarios/api/obtener/${userId}/`);
-            
-            if (!response.success) {
-                Utils.mostrarMensaje('error', response.message || 'Error al obtener datos del usuario');
-                return;
-            }
-
-            const usuario = response.usuario;
-            this.usuarioToEdit = userId;
-
-            // Configurar formulario con datos del usuario
-            const formConfig = {
-                fields: [
-                    { name: 'username', label: 'Nombre de Usuario', type: 'text', required: true, value: usuario.username },
-                    { name: 'email', label: 'Email', type: 'email', required: true, value: usuario.email },
-                    { name: 'password', label: 'Nueva Contraseña', type: 'password', required: false, placeholder: 'Dejar vacío para mantener la actual' },
-                    { name: 'first_name', label: 'Nombre', type: 'text', value: usuario.first_name },
-                    { name: 'last_name', label: 'Apellidos', type: 'text', value: usuario.last_name },
-                    { 
-                        name: 'tipo_usuario', 
-                        label: 'Tipo de Usuario', 
-                        type: 'select', 
-                        required: true,
-                        value: usuario.tipo_usuario,
-                        options: [
-                            { value: 'admin', label: '👑 Administrador' },
-                            { value: 'cliente', label: '👤 Cliente' },
-                            { value: 'desarrollador', label: '💻 Desarrollador' }
-                        ]
-                    },
-                    { name: 'telefono', label: 'Teléfono', type: 'tel', value: usuario.telefono },
-                    { name: 'activo', label: 'Usuario Activo', type: 'checkbox', value: usuario.activo }
-                ],
-                submitText: '💾 Guardar Cambios',
-                cancelText: 'Cancelar'
-            };
-
-            this.formModal.showForm(
-                `✏️ Editar Usuario: ${usuario.username}`,
-                formConfig,
-                async (formData) => await this.submitEditForm(userId, formData)
-            );
-
-        } catch (error) {
-            console.error('Error al cargar usuario para editar:', error);
-            Utils.mostrarMensaje('error', 'Error al cargar los datos del usuario');
-        }
     }
 
     /**
@@ -411,10 +349,19 @@ export class UsuariosModule extends DataTable {
             const response = await this.apiClient.post('/backoffice/usuarios/api/crear/', formData);
 
             if (response.success) {
-                // Éxito: cerrar modal y recargar tabla
+                // Éxito: cerrar modal y mostrar mensaje
                 Utils.mostrarMensaje('success', response.message || 'Usuario creado correctamente');
                 this.formModal.hide();
-                await this.refresh();
+                
+                // Si hay redirect_url, redirigir a la página de edición completa
+                if (response.redirect_url) {
+                    setTimeout(() => {
+                        window.location.href = response.redirect_url;
+                    }, 500);
+                } else {
+                    // Si no hay redirect, recargar tabla
+                    await this.refresh();
+                }
             } else {
                 // Error: mostrar errores de validación
                 if (response.errors) {
@@ -427,42 +374,6 @@ export class UsuariosModule extends DataTable {
         } catch (error) {
             console.error('Error al crear usuario:', error);
             Utils.mostrarMensaje('error', error.message || 'Error al crear el usuario');
-        } finally {
-            this.formModal.setLoading(false);
-        }
-    }
-
-    /**
-     * Envía el formulario de edición de usuario
-     * @param {string} userId - ID del usuario a editar
-     * @param {Object} formData - Datos del formulario
-     */
-    async submitEditForm(userId, formData) {
-        try {
-            // Establecer estado de carga
-            this.formModal.setLoading(true);
-
-            // Enviar petición de edición
-            const response = await this.apiClient.post(`/backoffice/usuarios/api/editar/${userId}/`, formData);
-
-            if (response.success) {
-                // Éxito: cerrar modal y recargar tabla
-                Utils.mostrarMensaje('success', response.message || 'Usuario actualizado correctamente');
-                this.formModal.hide();
-                this.usuarioToEdit = null;
-                await this.refresh();
-            } else {
-                // Error: mostrar errores de validación
-                if (response.errors) {
-                    this.formModal.showErrors(response.errors);
-                } else {
-                    Utils.mostrarMensaje('error', response.message || 'Error al actualizar el usuario');
-                }
-            }
-
-        } catch (error) {
-            console.error('Error al editar usuario:', error);
-            Utils.mostrarMensaje('error', error.message || 'Error al actualizar el usuario');
         } finally {
             this.formModal.setLoading(false);
         }

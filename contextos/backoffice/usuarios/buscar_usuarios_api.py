@@ -1,0 +1,184 @@
+from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import datetime, time
+from core.usuarios.UsuarioModel import Usuario
+from contextos.decorators import admin_required
+
+
+@admin_required
+def buscar_usuarios_api(request):
+    """
+    API para búsqueda asíncrona de usuarios con paginación y ordenación desde el backend.
+    Devuelve resultados en formato JSON para actualizar la tabla sin recargar la página.
+    Incluye manejo completo de excepciones y metadatos de paginación.
+    """
+    try:
+        # Obtener todos los usuarios como base
+        usuarios = Usuario.objects.all()
+        
+        # ========================================
+        # 1. APLICAR FILTROS DE BÚSQUEDA
+        # ========================================
+        busqueda = request.GET.get('filter_busqueda', '').strip()
+        tipo_usuario = request.GET.get('filter_tipo_usuario', '').strip()
+        fecha_desde = request.GET.get('filter_fecha_desde', '').strip()
+        fecha_hasta = request.GET.get('filter_fecha_hasta', '').strip()
+        
+        # Aplicar filtro de búsqueda general
+        if busqueda:
+            usuarios = usuarios.filter(
+                Q(first_name__icontains=busqueda) |
+                Q(last_name__icontains=busqueda) |
+                Q(email__icontains=busqueda) |
+                Q(telefono__contains=busqueda) |
+                Q(username__icontains=busqueda)
+            )
+        
+        # Aplicar filtro por tipo de usuario
+        if tipo_usuario:
+            usuarios = usuarios.filter(tipo_usuario=tipo_usuario)
+        
+        # Aplicar filtro por fecha de último acceso (desde)
+        if fecha_desde:
+            try:
+                fecha_desde_obj = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+                usuarios = usuarios.filter(fecha_ultimo_acceso__gte=fecha_desde_obj)
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Formato de fecha inválido (desde)',
+                    'message': 'La fecha debe estar en formato YYYY-MM-DD'
+                }, status=400)
+        
+        # Aplicar filtro por fecha de último acceso (hasta)
+        if fecha_hasta:
+            try:
+                fecha_hasta_obj = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+                fecha_hasta_completa = datetime.combine(fecha_hasta_obj, time(23, 59, 59))
+                usuarios = usuarios.filter(fecha_ultimo_acceso__lte=fecha_hasta_completa)
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Formato de fecha inválido (hasta)',
+                    'message': 'La fecha debe estar en formato YYYY-MM-DD'
+                }, status=400)
+        
+        # ========================================
+        # 2. APLICAR ORDENACIÓN DESDE EL BACKEND
+        # ========================================
+        order_by = request.GET.get('order_by', 'id')  # Campo por defecto: id
+        order_dir = request.GET.get('order_dir', 'asc')  # Dirección por defecto: ascendente
+        
+        # Mapeo de nombres de columnas del frontend a campos del modelo
+        campo_mapping = {
+            'id': 'id',
+            'username': 'username',
+            'nombre_completo': 'first_name',  # Ordenar por nombre
+            'email': 'email',
+            'tipo_usuario': 'tipo_usuario',
+            'telefono': 'telefono',
+            'activo': 'activo',
+            'fecha_ultimo_acceso': 'fecha_ultimo_acceso',
+        }
+        
+        # Validar que el campo sea válido
+        campo_orden = campo_mapping.get(order_by, 'id')
+        
+        # Aplicar dirección de ordenación (desc = descendente)
+        if order_dir == 'desc':
+            campo_orden = f'-{campo_orden}'
+        
+        usuarios = usuarios.order_by(campo_orden)
+        
+        # ========================================
+        # 3. CALCULAR KPIs (ANTES DE PAGINAR)
+        # ========================================
+        total_filtrado = usuarios.count()
+        kpis = {
+            'total': total_filtrado,
+            'admins': usuarios.filter(tipo_usuario='admin').count(),
+            'clientes': usuarios.filter(tipo_usuario='cliente').count(),
+            'desarrolladores': usuarios.filter(tipo_usuario='desarrollador').count(),
+        }
+
+        
+        # ========================================
+        # 4. APLICAR PAGINACIÓN DESDE EL BACKEND
+        # ========================================
+        page = request.GET.get('page', 1)  # Página actual (por defecto: 1)
+        page_size = request.GET.get('page_size', 10)  # Elementos por página (por defecto: 10)
+        
+        # Validar page_size
+        try:
+            page_size = int(page_size)
+            if page_size <= 0 or page_size > 100:
+                page_size = 10
+        except (TypeError, ValueError):
+            page_size = 10
+        
+        # Crear paginador
+        paginator = Paginator(usuarios, page_size)
+        
+        # Validar y obtener la página solicitada
+        try:
+            page = int(page)
+            usuarios_page = paginator.page(page)
+        except PageNotAnInteger:
+            usuarios_page = paginator.page(1)
+        except EmptyPage:
+            usuarios_page = paginator.page(paginator.num_pages)
+        
+        # ========================================
+        # 5. PREPARAR DATOS PARA JSON
+        # ========================================
+        usuarios_data = []
+        for usuario in usuarios_page:
+            try:
+                usuarios_data.append({
+                    'id': usuario.id,
+                    'username': usuario.username,
+                    'nombre_completo': usuario.nombre_completo,
+                    'email': usuario.email,
+                    'tipo_usuario': usuario.tipo_usuario,
+                    'tipo_usuario_display': usuario.get_tipo_usuario_display(),
+                    'telefono': usuario.telefono or '—',
+                    'activo': usuario.activo,
+                    'fecha_ultimo_acceso': usuario.fecha_ultimo_acceso.strftime('%d/%m/%Y %H:%M') if usuario.fecha_ultimo_acceso else 'Nunca',
+                })
+            except Exception as e:
+                # Si hay error al procesar un usuario específico, continuar con los demás
+                print(f"Error al procesar usuario {usuario.id}: {str(e)}")
+                continue
+        
+        # ========================================
+        # 6. DEVOLVER RESPUESTA CON METADATOS DE PAGINACIÓN
+        # ========================================
+        return JsonResponse({
+            'success': True,
+            'usuarios': usuarios_data,
+            'kpis': kpis,
+            'pagination': {
+                'current_page': usuarios_page.number,
+                'total_pages': paginator.num_pages,
+                'page_size': page_size,
+                'total_items': total_filtrado,
+                'has_next': usuarios_page.has_next(),
+                'has_previous': usuarios_page.has_previous(),
+                'next_page': usuarios_page.next_page_number() if usuarios_page.has_next() else None,
+                'previous_page': usuarios_page.previous_page_number() if usuarios_page.has_previous() else None,
+            },
+            'ordering': {
+                'order_by': order_by,
+                'order_dir': order_dir,
+            }
+        })
+    
+    except Exception as e:
+        # Capturar cualquier otro error inesperado
+        print(f"Error en buscar_usuarios_api: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Error interno del servidor',
+            'message': 'Ocurrió un error al procesar la búsqueda. Por favor, inténtelo de nuevo.'
+        }, status=500)

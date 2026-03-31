@@ -1,0 +1,188 @@
+{# Formulario de datos generales del usuario #}
+<div class="form-wrapper">
+    
+    <form method="post" action="{% url 'backoffice:usuarios:editar_api' usuario.id %}" id="form-usuario-datos" class="form-horizontal">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h3 class="form-section-title">👤 Información Personal</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        Nombre de Usuario <span class="required-indicator">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input"
+                        value="{{ usuario.username }}"
+                        required
+                        minlength="3"
+                    >
+                    <div class="form-error" id="username-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        Email <span class="required-indicator">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input"
+                        value="{{ usuario.email }}"
+                        required
+                    >
+                    <div class="form-error" id="email-error"></div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name" class="form-label">Nombre</label>
+                    <input 
+                        type="text" 
+                        id="first_name" 
+                        name="first_name" 
+                        class="form-input"
+                        value="{{ usuario.first_name }}"
+                    >
+                    <div class="form-error" id="first_name-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="last_name" class="form-label">Apellidos</label>
+                    <input 
+                        type="text" 
+                        id="last_name" 
+                        name="last_name" 
+                        class="form-input"
+                        value="{{ usuario.last_name }}"
+                    >
+                    <div class="form-error" id="last_name-error"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3 class="form-section-title">🔐 Seguridad y Acceso</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        Nueva Contraseña
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input"
+                        placeholder="Dejar vacío para mantener la actual"
+                        autocomplete="new-password"
+                    >
+                    <small class="form-help">Mínimo 8 caracteres. Dejar vacío si no desea cambiarla.</small>
+                    <div class="form-error" id="password-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tipo_usuario" class="form-label">
+                        Tipo de Usuario <span class="required-indicator">*</span>
+                    </label>
+                    <select id="tipo_usuario" name="tipo_usuario" class="form-select" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="admin" {% if usuario.tipo_usuario == 'admin' %}selected{% endif %}>👑 Administrador</option>
+                        <option value="cliente" {% if usuario.tipo_usuario == 'cliente' %}selected{% endif %}>👤 Cliente</option>
+                        <option value="desarrollador" {% if usuario.tipo_usuario == 'desarrollador' %}selected{% endif %}>💻 Desarrollador</option>
+                    </select>
+                    <div class="form-error" id="tipo_usuario-error"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3 class="form-section-title">📞 Información de Contacto</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="telefono" 
+                        name="telefono" 
+                        class="form-input"
+                        value="{{ usuario.telefono|default:'' }}"
+                        placeholder="+34 600 000 000"
+                        maxlength="15"
+                    >
+                    <div class="form-error" id="telefono-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Estado del Usuario</label>
+                    <div class="form-checkbox-group">
+                        <input 
+                            type="checkbox" 
+                            id="activo" 
+                            name="activo" 
+                            class="form-checkbox"
+                            {% if usuario.activo %}checked{% endif %}
+                        >
+                        <label for="activo" class="checkbox-label">Usuario Activo</label>
+                    </div>
+                    <small class="form-help">Los usuarios inactivos no pueden iniciar sesión.</small>
+                    <div class="form-error" id="activo-error"></div>
+                </div>
+            </div>
+        </div>
+        
+        {# Información adicional (solo lectura) #}
+        <div class="form-section form-section-readonly">
+            <h3 class="form-section-title">ℹ️ Información del Sistema</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">ID de Usuario</label>
+                    <div class="form-readonly-value">{{ usuario.id }}</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Fecha de Registro</label>
+                    <div class="form-readonly-value">{{ usuario.date_joined|date:"d/m/Y H:i" }}</div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Último Acceso</label>
+                    <div class="form-readonly-value">
+                        {% if usuario.fecha_ultimo_acceso %}
+                            {{ usuario.fecha_ultimo_acceso|date:"d/m/Y H:i" }}
+                        {% else %}
+                            Nunca
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Última Modificación</label>
+                    <div class="form-readonly-value">{{ usuario.last_login|date:"d/m/Y H:i"|default:"—" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        {# Botones de acción #}
+        <div class="form-actions">
+            <a href="{% url 'backoffice:usuarios:listado' %}" class="btn btn-secondary">
+                ← Volver al Listado
+            </a>
+            <button type="submit" class="btn btn-primary btn-save" id="btn-guardar-usuario">
+                💾 Guardar Cambios
+            </button>
+        </div>
+        
+    </form>
+    
+</div>
