@@ -2,74 +2,6 @@
 
 {% load static %}
 
-{% block extra_css %}
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<style>
-    /* Estilos personalizados para DataTables */
-    .dataTables_wrapper {
-        padding: 1rem 0;
-    }
-    
-    .dataTables_filter {
-        margin-bottom: 1rem;
-    }
-    
-    .dataTables_filter input {
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 0.5rem;
-        margin-left: 0.5rem;
-    }
-    
-    .dataTables_length select {
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 0.25rem;
-        margin: 0 0.5rem;
-    }
-    
-    .dataTables_info {
-        padding-top: 1rem;
-    }
-    
-    .dataTables_paginate {
-        padding-top: 1rem;
-    }
-    
-    .dataTables_paginate .paginate_button {
-        padding: 0.25rem 0.5rem;
-        margin: 0 0.25rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    
-    .dataTables_paginate .paginate_button.current {
-        background: #dc3545;
-        color: white !important;
-        border-color: #dc3545;
-    }
-    
-    .dataTables_paginate .paginate_button:hover {
-        background: #f8f9fa;
-        border-color: #aaa;
-    }
-    
-    table.dataTable thead th {
-        cursor: pointer;
-        position: relative;
-    }
-    
-    table.dataTable thead .sorting:after,
-    table.dataTable thead .sorting_asc:after,
-    table.dataTable thead .sorting_desc:after {
-        opacity: 0.5;
-        font-size: 0.8em;
-    }
-</style>
-{% endblock %}
-
 {% block nav %}
     {% include "gestion/backoffice/header.html" %}
 {% endblock %}
@@ -77,179 +9,281 @@
 
 {% block content %}
 
-<div class="listado-container">
-    <!-- Sección de KPIs -->
-    <div class="kpis-section">
-        <div class="kpi-card kpi-total">
-            <div class="kpi-icon">👥</div>
-            <div class="kpi-content">
-                <div class="kpi-label">Total Usuarios</div>
-                <div class="kpi-value" id="kpi-total"></div>
-            </div>
-        </div>
+<!-- Contenedor principal - toda la estructura se genera desde JavaScript -->
+<div class="listado-container"></div>
+
+<script>
+
+    // ============================================
+    // GENERACIÓN DINÁMICA DE ESTRUCTURA HTML
+    // ============================================
+    
+    /**
+     * Genera la estructura completa del listado de usuarios
+     */
+    function generarEstructuraListado() {
+        const container = document.querySelector('.listado-container');
+        container.innerHTML = '';
         
-        <div class="kpi-card kpi-admin">
-            <div class="kpi-icon">🔐</div>
-            <div class="kpi-content">
-                <div class="kpi-label">Administradores</div>
-                <div class="kpi-value" id="kpi-admins"></div>
-            </div>
-        </div>
+        // Generar cada sección
+        container.appendChild(generarSeccionKPIs());
+        container.appendChild(generarSeccionBusqueda());
+        container.appendChild(generarSeccionTabla());
+        container.appendChild(generarModal());
+    }
+    
+    /**
+     * Genera la sección de KPIs
+     */
+    function generarSeccionKPIs() {
+        const section = document.createElement('div');
+        section.className = 'kpis-section';
         
-        <div class="kpi-card kpi-cliente">
-            <div class="kpi-icon">💼</div>
-            <div class="kpi-content">
-                <div class="kpi-label">Clientes</div>
-                <div class="kpi-value" id="kpi-clientes"></div>
-            </div>
-        </div>
+        const kpis = [
+            { id: 'kpi-total', icon: '👥', label: 'Total Usuarios', class: 'kpi-total' },
+            { id: 'kpi-admins', icon: '🔐', label: 'Administradores', class: 'kpi-admin' },
+            { id: 'kpi-clientes', icon: '💼', label: 'Clientes', class: 'kpi-cliente' },
+            { id: 'kpi-desarrolladores', icon: '💻', label: 'Desarrolladores', class: 'kpi-desarrollador' }
+        ];
         
-        <div class="kpi-card kpi-desarrollador">
-            <div class="kpi-icon">💻</div>
-            <div class="kpi-content">
-                <div class="kpi-label">Desarrolladores</div>
-                <div class="kpi-value" id="kpi-desarrolladores"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección de buscador -->
-    <div class="search-section">
-        <h2>👥 Gestión de Usuarios</h2>
+        kpis.forEach(kpi => {
+            const card = document.createElement('div');
+            card.className = `kpi-card ${kpi.class}`;
+            card.innerHTML = `
+                <div class="kpi-icon">${kpi.icon}</div>
+                <div class="kpi-content">
+                    <div class="kpi-label">${kpi.label}</div>
+                    <div class="kpi-value" id="${kpi.id}"></div>
+                </div>
+            `;
+            section.appendChild(card);
+        });
         
-        <form method="GET" action="{% url 'backoffice:listado_usuarios' %}" class="search-form">
-            
-            <div class="search-filters">
-                <!-- Búsqueda general -->
-                <div class="filter-group filter-search">
-                    <label for="busqueda">Búsqueda General</label>
-                    <input 
-                        type="text" 
-                        id="busqueda" 
-                        name="filter_busqueda"
-                        class="search-input" 
-                        placeholder="Buscar por nombre, email o teléfono..."
-                        value="{{ request.GET.filter_busqueda }}"
-                    >
-                </div>
+        return section;
+    }
+    
+    /**
+     * Genera la sección de búsqueda con filtros
+     */
+    function generarSeccionBusqueda() {
+        const section = document.createElement('div');
+        section.className = 'search-section';
+        
+        const h2 = document.createElement('h2');
+        h2.textContent = '👥 Gestión de Usuarios';
+        section.appendChild(h2);
+        
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = "{% url 'backoffice:listado_usuarios' %}";
+        form.className = 'search-form';
+        
+        const filtersDiv = document.createElement('div');
+        filtersDiv.className = 'search-filters';
+        
+        // Filtro de búsqueda general
+        filtersDiv.innerHTML = `
+            <div class="filter-group filter-search">
+                <label for="busqueda">Búsqueda General</label>
+                <input 
+                    type="text" 
+                    id="busqueda" 
+                    name="filter_busqueda"
+                    class="search-input" 
+                    placeholder="Buscar por nombre, email o teléfono..."
+                    value="{{ request.GET.filter_busqueda }}"
+                >
+            </div>
 
-                <!-- Tipo de usuario -->
-                <div class="filter-group">
-                    <label for="tipo_usuario">Tipo de Usuario</label>
-                    <select id="tipo_usuario" name="filter_tipo_usuario" class="filter-select">
-                        <option value="">Todos los tipos</option>
-                        <option value="admin" {% if request.GET.filter_tipo_usuario == 'admin' %}selected{% endif %}>Administrador</option>
-                        <option value="cliente" {% if request.GET.filter_tipo_usuario == 'cliente' %}selected{% endif %}>Cliente</option>
-                        <option value="desarrollador" {% if request.GET.filter_tipo_usuario == 'desarrollador' %}selected{% endif %}>Desarrollador</option>
-                    </select>
-                </div>
+            <div class="filter-group">
+                <label for="tipo_usuario">Tipo de Usuario</label>
+                <select id="tipo_usuario" name="filter_tipo_usuario" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="admin" {% if request.GET.filter_tipo_usuario == 'admin' %}selected{% endif %}>Administrador</option>
+                    <option value="cliente" {% if request.GET.filter_tipo_usuario == 'cliente' %}selected{% endif %}>Cliente</option>
+                    <option value="desarrollador" {% if request.GET.filter_tipo_usuario == 'desarrollador' %}selected{% endif %}>Desarrollador</option>
+                </select>
+            </div>
 
-                <!-- Fecha desde -->
-                <div class="filter-group">
-                    <label for="fecha_desde">Último Acceso Desde</label>
-                    <input 
-                        type="date" 
-                        id="fecha_desde" 
-                        name="filter_fecha_desde"
-                        class="filter-input" 
-                        value="{{ request.GET.filter_fecha_desde }}"
-                    >
-                </div>
+            <div class="filter-group">
+                <label for="fecha_desde">Último Acceso Desde</label>
+                <input 
+                    type="date" 
+                    id="fecha_desde" 
+                    name="filter_fecha_desde"
+                    class="filter-input" 
+                    value="{{ request.GET.filter_fecha_desde }}"
+                >
+            </div>
 
-                <!-- Fecha hasta -->
-                <div class="filter-group">
-                    <label for="fecha_hasta">Último Acceso Hasta</label>
-                    <input 
-                        type="date" 
-                        id="fecha_hasta" 
-                        name="filter_fecha_hasta"
-                        class="filter-input" 
-                        value="{{ request.GET.filter_fecha_hasta }}"
-                    >
-                </div>
+            <div class="filter-group">
+                <label for="fecha_hasta">Último Acceso Hasta</label>
+                <input 
+                    type="date" 
+                    id="fecha_hasta" 
+                    name="filter_fecha_hasta"
+                    class="filter-input" 
+                    value="{{ request.GET.filter_fecha_hasta }}"
+                >
+            </div>
 
-                <!-- Botones de acción -->
-                <div class="filter-group filter-actions">
-                    <label>&nbsp;</label>
-                    <div class="actions-buttons">
-                        <button type="submit" class="search-btn">
-                            🔍 Buscar
-                        </button>
-                        <a href="{% url 'backoffice:listado_usuarios' %}" class="clear-btn">
-                            ✖️ Limpiar
-                        </a>
-                    </div>
+            <div class="filter-group filter-actions">
+                <label>&nbsp;</label>
+                <div class="actions-buttons">
+                    <button type="submit" class="search-btn">
+                        🔍 Buscar
+                    </button>
+                    <a href="{% url 'backoffice:listado_usuarios' %}" class="clear-btn">
+                        ✖️ Limpiar
+                    </a>
                 </div>
             </div>
-        </form>
-    </div>
-
-    <!-- Sección de tabla de usuarios -->
-    <div class="table-section">
-        <div class="table-header">
+        `;
+        
+        form.appendChild(filtersDiv);
+        section.appendChild(form);
+        
+        return section;
+    }
+    
+    /**
+     * Genera la sección de tabla con loader y paginación
+     */
+    function generarSeccionTabla() {
+        const section = document.createElement('div');
+        section.className = 'table-section';
+        
+        // Header de la tabla
+        const header = document.createElement('div');
+        header.className = 'table-header';
+        header.innerHTML = `
             <h3>Lista de Usuarios</h3>
-            <button class="btn-add">
-                ➕ Agregar Usuario
-            </button>
-        </div>
-
-        <!-- Loader absoluto para búsqueda asíncrona -->
-        <div id="searchLoader" class="search-loader" style="display: none;">
+            <button class="btn-add">➕ Agregar Usuario</button>
+        `;
+        section.appendChild(header);
+        
+        // Loader de búsqueda
+        const loader = document.createElement('div');
+        loader.id = 'searchLoader';
+        loader.className = 'search-loader';
+        loader.style.display = 'none';
+        loader.innerHTML = `
             <div class="loader-content">
                 <div class="spinner"></div>
                 <p>Buscando usuarios...</p>
             </div>
-        </div>
-
-        <table class="users-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Usuario</th>
-                    <th>Nombre Completo</th>
-                    <th>Email</th>
-                    <th>Tipo</th>
-                    <th>Teléfono</th>
-                    <th>Estado</th>
-                    <th>Último Acceso</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los usuarios se cargan dinámicamente mediante JavaScript -->
-                <tr>
-                    <td colspan="9" class="empty-state">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <div class="spinner"></div>
-                            <span>Cargando usuarios...</span>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Modal de confirmación para eliminar usuario -->
-<div id="modalEliminar" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>⚠️ Confirmar Eliminación</h3>
-            <button class="modal-close" onclick="cerrarModalEliminar()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>¿Estás seguro de que deseas eliminar al usuario <strong id="nombreUsuario"></strong>?</p>
-            <p class="warning-text">⚠️ Esta acción no se puede deshacer.</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
-            <button class="btn btn-danger" id="btnConfirmarEliminar" onclick="confirmarEliminacion()">Eliminar Usuario</button>
-        </div>
-    </div>
-</div>
-
-<script>
-
+        `;
+        section.appendChild(loader);
+        
+        // Tabla
+        const table = document.createElement('table');
+        table.className = 'data-table';
+        
+        const thead = document.createElement('thead');
+        const theadRow = document.createElement('tr');
+        
+        const columnas = [
+            { id: 'id', label: 'ID', sortable: true },
+            { id: 'username', label: 'Usuario', sortable: true },
+            { id: 'nombre_completo', label: 'Nombre Completo', sortable: true },
+            { id: 'email', label: 'Email', sortable: true },
+            { id: 'tipo_usuario', label: 'Tipo', sortable: true },
+            { id: 'telefono', label: 'Teléfono', sortable: true },
+            { id: 'activo', label: 'Estado', sortable: true },
+            { id: 'fecha_ultimo_acceso', label: 'Último Acceso', sortable: true },
+            { id: 'acciones', label: 'Acciones', sortable: false }
+        ];
+        
+        columnas.forEach(col => {
+            const th = document.createElement('th');
+            th.className = col.sortable ? 'sortable' : 'non-sortable';
+            if (col.sortable) {
+                th.setAttribute('data-column', col.id);
+            }
+            th.innerHTML = col.sortable 
+                ? `${col.label}<span class="sort-indicator">⇅</span>`
+                : col.label;
+            theadRow.appendChild(th);
+        });
+        
+        thead.appendChild(theadRow);
+        table.appendChild(thead);
+        
+        // Tbody con mensaje de carga inicial
+        const tbody = document.createElement('tbody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty-state">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <div class="spinner"></div>
+                        <span>Cargando usuarios...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+        table.appendChild(tbody);
+        
+        section.appendChild(table);
+        
+        // Controles de paginación
+        const paginationControls = document.createElement('div');
+        paginationControls.className = 'pagination-controls';
+        paginationControls.innerHTML = `
+            <div class="page-size-selector">
+                <label for="page-size">Mostrar:</label>
+                <select id="page-size">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span>registros por página</span>
+            </div>
+            
+            <div class="pagination-info">
+                <span id="pagination-text">Mostrando 0 a 0 de 0 registros</span>
+            </div>
+            
+            <div class="pagination-buttons">
+                <button id="btn-first-page" title="Primera página">⟪</button>
+                <button id="btn-prev-page" title="Página anterior">‹</button>
+                <div id="page-numbers"></div>
+                <button id="btn-next-page" title="Página siguiente">›</button>
+                <button id="btn-last-page" title="Última página">⟫</button>
+            </div>
+        `;
+        section.appendChild(paginationControls);
+        
+        return section;
+    }
+    
+    /**
+     * Genera el modal de confirmación de eliminación
+     */
+    function generarModal() {
+        const modal = document.createElement('div');
+        modal.id = 'modalEliminar';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⚠️ Confirmar Eliminación</h3>
+                    <button class="modal-close" onclick="cerrarModalEliminar()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar al usuario <strong id="nombreUsuario"></strong>?</p>
+                    <p class="warning-text">⚠️ Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
+                    <button class="btn btn-danger" id="btnConfirmarEliminar" onclick="confirmarEliminacion()">Eliminar Usuario</button>
+                </div>
+            </div>
+        `;
+        
+        return modal;
+    }
+    
     // ============================================
     // Sistema Modal Eliminación de Usuarios (Asíncrono)
     // ============================================
@@ -257,8 +291,11 @@
     // Variable para almacenar el ID del usuario a eliminar
     let usuarioIdAEliminar = null;
     
-    // Variable para almacenar la instancia de DataTable
-    let dataTableInstance = null;
+    // Variables de estado para paginación y ordenación
+    let currentPage = 1;
+    let pageSize = 10;
+    let orderBy = 'id';
+    let orderDir = 'asc';
 
     // Función para mostrar el modal de eliminación
     function mostrarModalEliminar(usuarioId, nombreUsuario) {
@@ -394,22 +431,26 @@
     });
     
     // ============================================
-    // Sistema de Búsqueda Asíncrona
+    // Sistema de Búsqueda Asíncrona con Paginación y Ordenación
     // ============================================
     
-    // Referencias a elementos/objetos del DOM
-    const inputBusqueda = document.getElementById('busqueda');
-    const selectTipoUsuario = document.getElementById('tipo_usuario');
-    const inputFechaDesde = document.getElementById('fecha_desde');
-    const inputFechaHasta = document.getElementById('fecha_hasta');
-    const tableBody = document.querySelector('.users-table tbody');
-    const searchForm = document.querySelector('.search-form');
-    const searchLoader = document.getElementById('searchLoader');
-    
     /**
-     * Realiza una búsqueda asíncrona de usuarios
+     * Realiza una búsqueda asíncrona de usuarios con paginación y ordenación
      */
     function buscarUsuariosAsincrono() {
+        // Obtener referencias a elementos del DOM
+        const inputBusqueda = document.getElementById('busqueda');
+        const selectTipoUsuario = document.getElementById('tipo_usuario');
+        const inputFechaDesde = document.getElementById('fecha_desde');
+        const inputFechaHasta = document.getElementById('fecha_hasta');
+        const tableBody = document.querySelector('.data-table tbody');
+        const searchLoader = document.getElementById('searchLoader');
+        
+        if (!tableBody) {
+            console.error('No se pudo encontrar el tbody de la tabla');
+            return;
+        }
+        
         // Construir parámetros de búsqueda
         const params = new URLSearchParams();
         
@@ -422,6 +463,12 @@
         if (tipoUsuario) params.append('filter_tipo_usuario', tipoUsuario);
         if (fechaDesde) params.append('filter_fecha_desde', fechaDesde);
         if (fechaHasta) params.append('filter_fecha_hasta', fechaHasta);
+        
+        // Agregar parámetros de paginación y ordenación
+        params.append('page', currentPage);
+        params.append('page_size', pageSize);
+        params.append('order_by', orderBy);
+        params.append('order_dir', orderDir);
         
         // Mostrar indicador de carga
         mostrarCargando();
@@ -441,7 +488,6 @@
         .then(response => {
             console.log("Respuesta HTTP:", response); // Debug: mostrar respuesta HTTP  
             if (!response.ok) {
-
                 return response.json().then(errorData => {
                     throw new Error(errorData.message || 'Error en la petición');
                 }).catch(() => {
@@ -454,6 +500,9 @@
             console.log("Respuesta del servidor:", data); // Debug: mostrar datos recibidos
             if (data.success) {
                 actualizarTablaUsuarios(data.usuarios);
+                actualizarPaginacionUI(data.pagination);
+                actualizarOrdenacionUI(data.ordering);
+                
                 // Actualizar KPIs si están disponibles
                 if (data.kpis) {
                     actualizarKpis(data.kpis);
@@ -471,112 +520,93 @@
     
     /**
      * Actualiza la tabla de usuarios con los datos recibidos
+     * Optimizado con DocumentFragment para evitar múltiples reflows
+     * y mantener contenido visible durante la carga
      */
     function actualizarTablaUsuarios(usuarios) {
-        // Ocultar loader
-        ocultarCargando();
-        
-        // Si existe una instancia de DataTable, destruirla antes de actualizar
-        if (dataTableInstance) {
-            dataTableInstance.destroy();
-            dataTableInstance = null;
+        // Obtener referencia al tbody
+        const tableBody = document.querySelector('.data-table tbody');
+        if (!tableBody) {
+            console.error('No se encontró el tbody de la tabla');
+            return;
         }
         
-        // Limpiar tabla actual
-        tableBody.innerHTML = '';
+        // Usar DocumentFragment para construir todas las filas en memoria
+        const fragment = document.createDocumentFragment();
         
         if (usuarios.length === 0) {
-            // Mostrar mensaje de no hay resultados
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="9" class="empty-state">
-                        No se encontraron usuarios con los criterios de búsqueda
+            // Crear fila de mensaje vacío
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="9" class="empty-state">
+                    No se encontraron usuarios con los criterios de búsqueda
+                </td>
+            `;
+            fragment.appendChild(emptyRow);
+        } else {
+            // Generar todas las filas en el fragment
+            usuarios.forEach(usuario => {
+                const fila = document.createElement('tr');
+                
+                // Determinar clase del badge según tipo de usuario
+                const badgeClass = `badge badge-${usuario.tipo_usuario}`;
+                
+                // Determinar estado activo/inactivo
+                const estadoHTML = usuario.activo 
+                    ? '<span class="status status-active">✓ Activo</span>'
+                    : '<span class="status status-inactive">✗ Inactivo</span>';
+                
+                fila.innerHTML = `
+                    <td>${usuario.id}</td>
+                    <td>${usuario.username}</td>
+                    <td>${usuario.nombre_completo}</td>
+                    <td>${usuario.email}</td>
+                    <td>
+                        <span class="${badgeClass}">
+                            ${usuario.tipo_usuario_display}
+                        </span>
                     </td>
-                </tr>
-            `;
-            return;
-        }
-        
-        // Generar filas de la tabla
-        usuarios.forEach(usuario => {
-            const fila = document.createElement('tr');
-            
-            // Determinar clase del badge según tipo de usuario
-            const badgeClass = `badge badge-${usuario.tipo_usuario}`;
-            
-            // Determinar estado activo/inactivo
-            const estadoHTML = usuario.activo 
-                ? '<span class="status status-active">✓ Activo</span>'
-                : '<span class="status status-inactive">✗ Inactivo</span>';
-            
-            fila.innerHTML = `
-                <td>${usuario.id}</td>
-                <td>${usuario.username}</td>
-                <td>${usuario.nombre_completo}</td>
-                <td>${usuario.email}</td>
-                <td>
-                    <span class="${badgeClass}">
-                        ${usuario.tipo_usuario_display}
-                    </span>
-                </td>
-                <td>${usuario.telefono}</td>
-                <td>${estadoHTML}</td>
-                <td>${usuario.fecha_ultimo_acceso}</td>
-                <td class="actions">
-                    <button class="action-btn btn-view" title="Ver">👁️</button>
-                    <button class="action-btn btn-edit" title="Editar">✏️</button>
-                    <button class="action-btn btn-delete" 
-                            title="Eliminar"
-                            onclick="mostrarModalEliminar(${usuario.id}, '${usuario.nombre_completo.replace(/'/g, "\\'")}')">🗑️</button>
-                </td>
-            `;
-            
-            tableBody.appendChild(fila);
-        });
-        
-        // Inicializar DataTables después de cargar los datos
-        inicializarDataTable();
-    }
-    
-    /**
-     * Inicializa DataTables en la tabla de usuarios
-     */
-    function inicializarDataTable() {
-        // Verificar que jQuery y DataTables estén disponibles
-        if (typeof jQuery === 'undefined' || typeof jQuery.fn.DataTable === 'undefined') {
-            console.error('jQuery o DataTables no están disponibles');
-            return;
-        }
-        
-        try {
-            dataTableInstance = jQuery('.users-table').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                },
-                pageLength: 10,
-                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
-                order: [[0, 'asc']], // Ordenar por ID por defecto
-                columnDefs: [
-                    {
-                        targets: -1, // Última columna (Acciones)
-                        orderable: false, // No permitir ordenar por acciones
-                        searchable: false
-                    }
-                ],
-                responsive: true,
-                dom: '<"top"lf>rt<"bottom"ip><"clear">'
+                    <td>${usuario.telefono}</td>
+                    <td>${estadoHTML}</td>
+                    <td>${usuario.fecha_ultimo_acceso}</td>
+                    <td class="actions">
+                        <button class="action-btn btn-view" title="Ver">👁️</button>
+                        <button class="action-btn btn-edit" title="Editar">✏️</button>
+                        <button class="action-btn btn-delete" 
+                                title="Eliminar"
+                                onclick="mostrarModalEliminar(${usuario.id}, '${usuario.nombre_completo.replace(/'/g, "\\'")}')">🗑️</button>
+                    </td>
+                `;
+                
+                fragment.appendChild(fila);
             });
-        } catch (error) {
-            console.error('Error al inicializar DataTables:', error);
         }
+        
+        // MEJORA: Reemplazar contenido solo cuando el nuevo contenido esté listo
+        // Esto evita que la tabla se vea vacía en ningún momento
+        tableBody.innerHTML = '';
+        tableBody.appendChild(fragment);
+        
+        // Ocultar loader después de actualizar la tabla
+        // El contenido ya está visible, así que el cambio es instantáneo
+        ocultarCargando();
     }
     
     /**
      * Muestra indicador de carga en la tabla
+     * El loader es un overlay semi-transparente que no oculta el contenido actual
      */
     function mostrarCargando() {
+        const searchLoader = document.getElementById('searchLoader');
+        const tableSection = document.querySelector('.table-section');
+        
         if (searchLoader) {
             searchLoader.style.display = 'flex';
+        }
+        
+        // Añadir clase de carga a la tabla para indicar visualmente el estado
+        if (tableSection) {
+            tableSection.classList.add('loading');
         }
     }
     
@@ -584,8 +614,16 @@
      * Oculta el indicador de carga
      */
     function ocultarCargando() {
+        const searchLoader = document.getElementById('searchLoader');
+        const tableSection = document.querySelector('.table-section');
+        
         if (searchLoader) {
             searchLoader.style.display = 'none';
+        }
+        
+        // Remover clase de carga
+        if (tableSection) {
+            tableSection.classList.remove('loading');
         }
     }
     
@@ -594,13 +632,17 @@
      */
     function mostrarError(mensaje) {
         ocultarCargando();
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="9" class="empty-state" style="color: #dc3545;">
-                    ❌ ${mensaje}
-                </td>
-            </tr>
-        `;
+        
+        const tableBody = document.querySelector('.data-table tbody');
+        if (tableBody) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty-state" style="color: #dc3545;">
+                        ❌ ${mensaje}
+                    </td>
+                </tr>
+            `;
+        }
     }
     
     /**
@@ -631,33 +673,246 @@
         });
     }
     
-    
     // ============================================
-    // Event Listeners
+    // Sistema de Paginación
     // ============================================
     
-    // Prevenir submit del formulario para usar solo búsqueda asíncrona
-    if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            buscarUsuariosAsincrono();
+    /**
+     * Actualiza los controles de paginación con los datos del backend
+     */
+    function actualizarPaginacionUI(pagination) {
+        const { current_page, total_pages, page_size, total_items, has_next, has_previous } = pagination;
+        
+        // Actualizar botones de navegación
+        document.getElementById('btn-first-page').disabled = !has_previous;
+        document.getElementById('btn-prev-page').disabled = !has_previous;
+        document.getElementById('btn-next-page').disabled = !has_next;
+        document.getElementById('btn-last-page').disabled = !has_next;
+        
+        // Actualizar información de paginación
+        const inicio = total_items === 0 ? 0 : ((current_page - 1) * page_size + 1);
+        const fin = Math.min(current_page * page_size, total_items);
+        document.getElementById('pagination-text').textContent = 
+            `Mostrando ${inicio} a ${fin} de ${total_items} registros`;
+        
+        // Generar números de página
+        generarNumerosPagina(current_page, total_pages);
+    }
+    
+    /**
+     * Genera los botones de números de página
+     */
+    function generarNumerosPagina(currentPage, totalPages) {
+        const container = document.getElementById('page-numbers');
+        container.innerHTML = '';
+        
+        // No mostrar números si no hay páginas
+        if (totalPages === 0) return;
+        
+        // Calcular rango de páginas a mostrar (máximo 5 botones)
+        const maxButtons = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+        
+        // Ajustar si no llegamos a maxButtons
+        if (endPage - startPage < maxButtons - 1) {
+            startPage = Math.max(1, endPage - maxButtons + 1);
+        }
+        
+        // Crear botones de página
+        for (let i = startPage; i <= endPage; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = i === currentPage ? 'active' : '';
+            btn.onclick = () => irAPagina(i);
+            container.appendChild(btn);
+        }
+    }
+    
+    /**
+     * Navega a una página específica
+     */
+    function irAPagina(page) {
+        currentPage = page;
+        buscarUsuariosAsincrono();
+    }
+    
+    /**
+     * Cambia el tamaño de página
+     */
+    function cambiarPageSize(newSize) {
+        pageSize = parseInt(newSize);
+        currentPage = 1; // Resetear a la primera página
+        buscarUsuariosAsincrono();
+    }
+    
+    /**
+     * Configura los event listeners de paginación
+     * (Renombrado de inicializarPaginacion para mayor claridad semántica)
+     */
+    function configurarPaginacion() {
+        // Botones de navegación
+        document.getElementById('btn-first-page').addEventListener('click', () => irAPagina(1));
+        document.getElementById('btn-prev-page').addEventListener('click', () => {
+            if (currentPage > 1) irAPagina(currentPage - 1);
+        });
+        document.getElementById('btn-next-page').addEventListener('click', () => {
+            // Se verificará has_next en el backend
+            irAPagina(currentPage + 1);
+        });
+        document.getElementById('btn-last-page').addEventListener('click', () => {
+            // La última página se determinará dinámicamente
+            // Por ahora, incrementamos y el backend ajustará
+            irAPagina(999);
+        });
+        
+        // Selector de tamaño de página
+        document.getElementById('page-size').addEventListener('change', (e) => {
+            cambiarPageSize(e.target.value);
         });
     }
     
     // ============================================
-    // Carga inicial automática
+    // Sistema de Ordenación
     // ============================================
     
-    // Cargar usuarios automáticamente al cargar previamente la página (para mostrar el loader)
+    /**
+     * Actualiza los indicadores de ordenación en las cabeceras
+     */
+    function actualizarOrdenacionUI(ordering) {
+        const { order_by, order_dir } = ordering;
+        
+        // Limpiar todos los indicadores
+        document.querySelectorAll('.data-table thead th').forEach(th => {
+            th.classList.remove('sorted');
+            const indicator = th.querySelector('.sort-indicator');
+            if (indicator) {
+                indicator.textContent = '⇅';
+            }
+        });
+        
+        // Marcar la columna ordenada actualmente
+        const activeColumn = document.querySelector(`.data-table thead th[data-column="${order_by}"]`);
+        if (activeColumn) {
+            activeColumn.classList.add('sorted');
+            const indicator = activeColumn.querySelector('.sort-indicator');
+            if (indicator) {
+                indicator.textContent = order_dir === 'asc' ? '↑' : '↓';
+            }
+        }
+    }
+    
+    /**
+     * Cambia la ordenación de la tabla
+     */
+    function cambiarOrdenacion(column) {
+        // Si es la misma columna, alternar dirección
+        if (orderBy === column) {
+            orderDir = orderDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Nueva columna, ordenar ascendente por defecto
+            orderBy = column;
+            orderDir = 'asc';
+        }
+        
+        // Resetear a la primera página al cambiar ordenación
+        currentPage = 1;
+        
+        buscarUsuariosAsincrono();
+    }
+    
+    /**
+     * Configura los event listeners de ordenación
+     * (Renombrado de inicializarOrdenacion para mayor claridad semántica)
+     */
+    function configurarOrdenacion() {
+        // Agregar click listeners a todas las columnas ordenables
+        document.querySelectorAll('.data-table thead th.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.getAttribute('data-column');
+                if (column) {
+                    cambiarOrdenacion(column);
+                }
+            });
+        });
+    }
+    
+    
+
+    
+    // ============================================
+    // Inicialización al cargar la página
+    // ============================================
+    
     document.addEventListener('DOMContentLoaded', function() {
+        // 1. Generar toda la estructura HTML dinámicamente
+        generarEstructuraListado();
+        
+        // 2. Configurar listeners de paginación y ordenación
+        configurarPaginacion();
+        configurarOrdenacion();
+        
+        // 3. Configurar listeners de búsqueda y filtros
+        configurarBusquedaYFiltros();
+        
+        // 4. Realizar la primera carga de datos
         buscarUsuariosAsincrono();
     });
+    
+    /**
+     * Configura los listeners de búsqueda y filtros
+     */
+    function configurarBusquedaYFiltros() {
+        // Referencias a elementos del DOM (ahora generados dinámicamente)
+        const searchForm = document.querySelector('.search-form');
+        const inputBusqueda = document.getElementById('busqueda');
+        const selectTipoUsuario = document.getElementById('tipo_usuario');
+        const inputFechaDesde = document.getElementById('fecha_desde');
+        const inputFechaHasta = document.getElementById('fecha_hasta');
+        
+        // Prevenir submit del formulario y resetear a página 1
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                currentPage = 1;
+                buscarUsuariosAsincrono();
+            });
+        }
+        
+        // Debounce para el campo de búsqueda
+        if (inputBusqueda) {
+            let debounceTimer;
+            inputBusqueda.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    currentPage = 1;
+                    buscarUsuariosAsincrono();
+                }, 500);
+            });
+        }
+        
+        // Listeners para los demás filtros
+        if (selectTipoUsuario) {
+            selectTipoUsuario.addEventListener('change', function() {
+                currentPage = 1;
+                buscarUsuariosAsincrono();
+            });
+        }
+        
+        if (inputFechaDesde) {
+            inputFechaDesde.addEventListener('change', function() {
+                currentPage = 1;
+                buscarUsuariosAsincrono();
+            });
+        }
+        
+        if (inputFechaHasta) {
+            inputFechaHasta.addEventListener('change', function() {
+                currentPage = 1;
+                buscarUsuariosAsincrono();
+            });
+        }
+    }
 </script>
-
-<!-- jQuery (requerido para DataTables) -->
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 {% endblock %}
