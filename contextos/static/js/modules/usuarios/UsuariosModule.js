@@ -161,26 +161,31 @@ export class UsuariosModule extends DataTable {
     }
 
     /**
-     * Sobrescribe setupCustomListeners para agregar listeners específicos
+     * Sobrescribe setupEventListeners para desactivar búsqueda automática.
+     * La búsqueda se activa solo con el botón "Buscar"
      */
-    setupCustomListeners() {
-        // Filtro de tipo de usuario
-        const tipoSelect = document.getElementById('filter_tipo_usuario');
-        if (tipoSelect) {
-            tipoSelect.addEventListener('change', () => this.handleFilterChange());
-        }
+    setupEventListeners() {
+        // NO agregar listener de búsqueda automática en el input
+        // Solo mantener la ordenación en headers
+        this.setupSortingHeaders();
 
-        // Filtro de estado
-        const estadoSelect = document.getElementById('filter_estado');
-        if (estadoSelect) {
-            estadoSelect.addEventListener('change', () => this.handleFilterChange());
-        }
+        // Event listeners personalizados (sin búsqueda automática)
+        this.setupCustomListeners();
     }
 
     /**
-     * Maneja cambios en los filtros
+     * Sobrescribe setupCustomListeners para NO activar búsqueda automática.
+     * La búsqueda se activa solo con el botón "Buscar"
      */
-    async handleFilterChange() {
+    setupCustomListeners() {
+        // NO agregar listeners de cambio automático
+        // El usuario debe hacer click en "Buscar" explícitamente
+    }
+
+    /**
+     * Maneja el evento de búsqueda manual (botón Buscar)
+     */
+    async handleBuscar() {
         this.state.currentPage = 1;
         await this.loadData();
     }

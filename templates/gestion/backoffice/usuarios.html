@@ -19,9 +19,11 @@
     <div class="search-section">
         <div class="search-header">
             <h2>👥 Gestión de Usuarios</h2>
-            <button type="button" id="btn-crear-usuario" class="btn btn-primary">
-                ➕ Crear Usuario
-            </button>
+            <div class="header-actions">
+                <button type="button" id="btn-crear-usuario" class="btn btn-primary">
+                    ➕ Crear Usuario
+                </button>
+            </div>
         </div>
         
         <div class="search-filters">
@@ -58,12 +60,17 @@
                 </select>
             </div>
 
-            <!-- Botón limpiar filtros -->
+            <!-- Botones de acción -->
             <div class="filter-group filter-actions">
                 <label>&nbsp;</label>
-                <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary btn-sm">
-                    🔄 Limpiar Filtros
-                </button>
+                <div class="actions-buttons">
+                    <button type="button" id="btn-buscar" class="btn btn-primary btn-sm">
+                        🔍 Buscar
+                    </button>
+                    <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary btn-sm">
+                        🔄 Limpiar
+                    </button>
+                </div>
             </div>
         </div>
     </div>

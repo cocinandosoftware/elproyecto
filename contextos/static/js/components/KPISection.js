@@ -65,11 +65,7 @@ export class KPISection {
     render() {
         if (!this.elements.container) return;
 
-        const html = `
-            <div class="kpis-grid">
-                ${this.config.kpis.map(kpi => this.buildKPICard(kpi)).join('')}
-            </div>
-        `;
+        const html = this.config.kpis.map(kpi => this.buildKPICard(kpi)).join('');
 
         this.elements.container.innerHTML = html;
         this.cacheKPIElements();
