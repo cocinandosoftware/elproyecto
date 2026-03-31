@@ -1,28 +1,37 @@
 /**
  * Punto de entrada para el módulo de Usuarios
- * Inicializa la tabla de usuarios y sus componentes
+ * Inicializa el módulo de usuarios con todas sus funcionalidades
  */
 
-import { UsuariosTable } from './UsuariosTable.js';
+import { UsuariosModule } from './UsuariosModule.js';
 
 /**
  * Inicialización del módulo
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Instanciar y inicializar la tabla de usuarios
-    const usuariosTable = new UsuariosTable();
-    usuariosTable.init();
+    // Instanciar y inicializar el módulo de usuarios
+    const usuariosModule = new UsuariosModule();
+    usuariosModule.init();
 
-    // Exponer globalmente para debugging (opcional)
-    window.usuariosTable = usuariosTable;
+    // Exponer globalmente para debugging y acceso desde otros scripts
+    window.usuariosModule = usuariosModule;
 
-    // Botón limpiar filtros (si existe en el HTML)
+    // Botón crear usuario
+    const btnCrear = document.getElementById('btn-crear-usuario');
+    if (btnCrear) {
+        btnCrear.addEventListener('click', () => {
+            usuariosModule.handleCreate();
+        });
+    }
+
+    // Botón limpiar filtros
     const btnLimpiarFiltros = document.getElementById('btn-limpiar-filtros');
     if (btnLimpiarFiltros) {
         btnLimpiarFiltros.addEventListener('click', () => {
-            usuariosTable.limpiarFiltros();
+            usuariosModule.limpiarFiltros();
         });
     }
 
     console.log('✅ Módulo de Usuarios inicializado correctamente');
 });
+
